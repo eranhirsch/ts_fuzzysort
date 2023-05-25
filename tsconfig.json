@@ -1,12 +1,14 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
 
-  "include": ["src/**/*"],
+  "include": ["src/**/*", ".eslintrc.js"],
 
   "extends": "@tsconfig/strictest/tsconfig.json",
 
   "compilerOptions": {
-    "target": "ESNext" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "module": "CommonJS" /* Specify what module code is generated. */
+    "target": "ESNext",
+    "module": "CommonJS",
+
+    "outDir": "dist"
   }
 }
