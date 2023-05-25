@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
 
-  "include": ["src/**/*", ".eslintrc.js"],
+  "include": ["src/**/*", ".eslintrc.js", "*.config.js"],
 
   "extends": "@tsconfig/strictest/tsconfig.json",
 
