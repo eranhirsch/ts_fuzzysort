@@ -1,0 +1,22 @@
+{
+  "name": "ts_fuzzysort",
+  "version": "1.0.0",
+  "description": "Reimplement fuzzysort/fuzzysort with in typescript, esnext, and a better API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/eranhirsch/ts_fuzzysort.git"
+  },
+  "author": "Eran Hirsch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eranhirsch/ts_fuzzysort/issues"
+  },
+  "homepage": "https://github.com/eranhirsch/ts_fuzzysort#readme",
+  "devDependencies": {
+    "typescript": "^5.0.4"
+  }
+}
