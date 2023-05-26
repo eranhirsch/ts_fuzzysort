@@ -12,56 +12,96 @@ const BIT_DIGIT = 25;
 const BIT_ASCII_SYMBOL = 30;
 const BIT_OTHER = 31;
 
-interface Searchable {
+interface Text {
   readonly codePoints: readonly number[];
   readonly presentCharacters: RoaringBitmap32;
-  readonly hasSpaces: boolean;
   readonly lowerCase: string;
 }
 
-export function asSearchable(raw: string): Searchable {
+interface Query extends Text {
+  readonly words: readonly Omit<Text, "presentCharacters">[];
+}
+
+interface Searchable extends Text {
+  readonly raw: string;
+}
+
+export function createQuery(raw: string): Query {
+  const trimmed = raw.trim();
+  const lowerCase = trimmed.toLowerCase();
+
+  const codePoints: number[] = [];
+
+  const words: Omit<Text, "presentCharacters">[] = [];
+
+  const presentCharacters = new RoaringBitmap32();
+
+  let lastSpace = 0;
+  for (const char of lowerCase) {
+    const codePoint = char.codePointAt(0);
+    // This should never fire, it's by definition of how iterators on strings
+    // work
+    invariant(codePoint !== undefined);
+
+    if (codePoint === CODE_POINT_REGULAR_SPACE) {
+      if (lastSpace < codePoints.length - 1) {
+        words.push({
+          codePoints: codePoints.slice(lastSpace),
+          lowerCase: lowerCase.slice(lastSpace + 1, codePoints.length),
+        });
+      }
+      lastSpace = codePoints.length;
+    } else {
+      presentCharacters.add(codePointEncoding(codePoint));
+    }
+
+    codePoints.push(codePoint);
+  }
+
+  return {
+    lowerCase,
+    codePoints,
+    presentCharacters,
+    words,
+  };
+}
+
+export function createSearchable(raw: string): Searchable {
   const lowerCase = raw.toLowerCase();
 
   const codePoints: number[] = [];
   const presentCharacters = new RoaringBitmap32();
 
-  let hasSpaces = false;
-
   for (const char of lowerCase) {
-    const charCode = char.codePointAt(0);
-    invariant(
-      charCode !== undefined,
-      `Couldn't get code point from '${char}' of raw ${raw}}`
-    );
+    const codePoint = char.codePointAt(0);
+    invariant(codePoint !== undefined);
 
-    codePoints.push(charCode);
-
-    if (charCode === CODE_POINT_REGULAR_SPACE) {
-      // We treat spaces differently, we don't encode them in the bitmap
-      hasSpaces = true;
-      continue;
+    if (codePoint !== CODE_POINT_REGULAR_SPACE) {
+      presentCharacters.add(codePointEncoding(codePoint));
     }
 
-    const encodedBit =
-      // Bits 0..25 are for each character separately
-      charCode >= CODE_POINT_LOWERCASE_A && charCode <= CODE_POINT_LOWERCASE_Z
-        ? charCode - CODE_POINT_LOWERCASE_A
-        : // All digits will share a single bit
-        charCode >= CODE_POINT_0 && charCode <= CODE_POINT_9
-        ? BIT_DIGIT
-        : // The next bit is for any other ASCII character
-        charCode <= CODE_POINT_ASCII_MAX
-        ? BIT_ASCII_SYMBOL
-        : // And the final bit is for any non-ASCII character
-          BIT_OTHER;
-
-    presentCharacters.add(encodedBit);
+    codePoints.push(codePoint);
   }
 
   return {
+    raw,
     codePoints,
     presentCharacters,
-    hasSpaces,
     lowerCase,
   };
+}
+
+function codePointEncoding(codePoint: number): number {
+  // Bits 0..25 are for each character separately
+  return codePoint >= CODE_POINT_LOWERCASE_A &&
+    codePoint <= CODE_POINT_LOWERCASE_Z
+    ? codePoint - CODE_POINT_LOWERCASE_A
+    : // All digits will share a single bit
+    codePoint >= CODE_POINT_0 && codePoint <= CODE_POINT_9
+    ? BIT_DIGIT
+    : // The next bit is for any other ASCII character
+    codePoint <= CODE_POINT_ASCII_MAX
+    ? BIT_ASCII_SYMBOL
+    : // And the final bit is for any non-ASCII character
+      BIT_OTHER;
 }
