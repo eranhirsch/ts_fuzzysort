@@ -4,7 +4,7 @@
   "description": "Reimplement fuzzysort/fuzzysort with in typescript, esnext, and a better API",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
     "prepare": "husky install"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "vitest": "^0.31.1"
   }
 }
