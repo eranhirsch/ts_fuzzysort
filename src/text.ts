@@ -1,20 +1,20 @@
 import invariant from "tiny-invariant";
-import { RoaringBitmap32 } from "roaring";
+import { TypedFastBitSet } from "typedfastbitset";
 
-const CODE_POINT_LOWERCASE_A = 97;
-const CODE_POINT_LOWERCASE_Z = 122;
-const CODE_POINT_0 = 48;
-const CODE_POINT_9 = 57;
-const CODE_POINT_REGULAR_SPACE = 32;
-const CODE_POINT_ASCII_MAX = 127;
+export const CODE_POINT_LOWERCASE_A = 97;
+export const CODE_POINT_LOWERCASE_Z = 122;
+export const CODE_POINT_0 = 48;
+export const CODE_POINT_9 = 57;
+export const CODE_POINT_REGULAR_SPACE = 32;
+const CODE_POINT_ASCII_MAX = 0x7f;
 
-const BIT_DIGIT = 25;
-const BIT_ASCII_SYMBOL = 30;
-const BIT_OTHER = 31;
+const BIT_DIGIT = 26;
+const BIT_ASCII_SYMBOL = 27;
+const BIT_OTHER = 28;
 
 interface Text {
   readonly codePoints: readonly number[];
-  readonly presentCharacters: RoaringBitmap32;
+  readonly presentCharacters: TypedFastBitSet;
   readonly lowerCase: string;
 }
 
@@ -34,7 +34,7 @@ export function createQuery(raw: string): Query {
 
   const words: Omit<Text, "presentCharacters">[] = [];
 
-  const presentCharacters = new RoaringBitmap32();
+  const presentCharacters = new TypedFastBitSet();
 
   let lastSpace = 0;
   for (const char of lowerCase) {
@@ -70,7 +70,7 @@ export function createSearchable(raw: string): Searchable {
   const lowerCase = raw.toLowerCase();
 
   const codePoints: number[] = [];
-  const presentCharacters = new RoaringBitmap32();
+  const presentCharacters = new TypedFastBitSet();
 
   for (const char of lowerCase) {
     const codePoint = char.codePointAt(0);

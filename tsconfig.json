@@ -9,6 +9,8 @@
     "target": "ESNext",
     "module": "CommonJS",
 
-    "outDir": "dist"
+    "outDir": "dist",
+
+    "types": ["vitest/globals"]
   }
 }
