@@ -1,4 +1,3 @@
-import invariant from "tiny-invariant";
 import { TypedFastBitSet } from "typedfastbitset";
 
 export const CODE_POINT_LOWERCASE_A = 97;
@@ -38,18 +37,14 @@ export function createQuery(raw: string): Query {
 
   let lastSpace = -1;
   for (const char of lowerCase) {
-    const codePoint = char.codePointAt(0);
-    // This should never fire, it's by definition of how iterators on strings
-    // work
-    invariant(codePoint !== undefined);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- There's no easy around this
+    const codePoint = char.codePointAt(0)!;
 
     if (codePoint === CODE_POINT_REGULAR_SPACE) {
+      // We skip consecutive spaces
       if (lastSpace < codePoints.length - 1) {
         words ??= [];
-        words.push({
-          codePoints: codePoints.slice(lastSpace + 1),
-          lowerCase: lowerCase.slice(lastSpace + 1, codePoints.length),
-        });
+        words.push(sliceLastWord(codePoints, lowerCase, lastSpace));
       }
       lastSpace = codePoints.length;
     } else {
@@ -60,11 +55,8 @@ export function createQuery(raw: string): Query {
   }
 
   if (words !== undefined) {
-    // add last word
-    words.push({
-      codePoints: codePoints.slice(lastSpace + 1),
-      lowerCase: lowerCase.slice(lastSpace + 1, codePoints.length),
-    });
+    // add the last word
+    words.push(sliceLastWord(codePoints, lowerCase, lastSpace));
   }
 
   return {
@@ -82,14 +74,13 @@ export function createSearchable(raw: string): Searchable {
   const presentCharacters = new TypedFastBitSet();
 
   for (const char of lowerCase) {
-    const codePoint = char.codePointAt(0);
-    invariant(codePoint !== undefined);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- There's no easy around this
+    const codePoint = char.codePointAt(0)!;
+    codePoints.push(codePoint);
 
     if (codePoint !== CODE_POINT_REGULAR_SPACE) {
       presentCharacters.add(codePointEncoding(codePoint));
     }
-
-    codePoints.push(codePoint);
   }
 
   return {
@@ -114,3 +105,13 @@ export function codePointEncoding(codePoint: number): number {
     : // And the final bit is for any non-ASCII character
       BIT_OTHER;
 }
+
+const sliceLastWord = (
+  codePoints: number[],
+  lowerCase: string,
+  lastSpace: number
+) =>
+  ({
+    codePoints: codePoints.slice(lastSpace + 1),
+    lowerCase: lowerCase.slice(lastSpace + 1, codePoints.length),
+  } as const);
