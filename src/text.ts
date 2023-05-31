@@ -19,7 +19,7 @@ interface Text {
 }
 
 interface Query extends Text {
-  readonly words: readonly Omit<Text, "presentCharacters">[];
+  readonly words?: readonly Omit<Text, "presentCharacters">[];
 }
 
 interface Searchable extends Text {
@@ -32,11 +32,11 @@ export function createQuery(raw: string): Query {
 
   const codePoints: number[] = [];
 
-  const words: Omit<Text, "presentCharacters">[] = [];
+  let words: Omit<Text, "presentCharacters">[] | undefined;
 
   const presentCharacters = new TypedFastBitSet();
 
-  let lastSpace = 0;
+  let lastSpace = -1;
   for (const char of lowerCase) {
     const codePoint = char.codePointAt(0);
     // This should never fire, it's by definition of how iterators on strings
@@ -45,8 +45,9 @@ export function createQuery(raw: string): Query {
 
     if (codePoint === CODE_POINT_REGULAR_SPACE) {
       if (lastSpace < codePoints.length - 1) {
+        words ??= [];
         words.push({
-          codePoints: codePoints.slice(lastSpace),
+          codePoints: codePoints.slice(lastSpace + 1),
           lowerCase: lowerCase.slice(lastSpace + 1, codePoints.length),
         });
       }
@@ -58,11 +59,19 @@ export function createQuery(raw: string): Query {
     codePoints.push(codePoint);
   }
 
+  if (words !== undefined) {
+    // add last word
+    words.push({
+      codePoints: codePoints.slice(lastSpace + 1),
+      lowerCase: lowerCase.slice(lastSpace + 1, codePoints.length),
+    });
+  }
+
   return {
     lowerCase,
     codePoints,
     presentCharacters,
-    words,
+    ...(words !== undefined && { words }),
   };
 }
 

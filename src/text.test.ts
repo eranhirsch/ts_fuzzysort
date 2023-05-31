@@ -37,7 +37,6 @@ describe("Query", () => {
             0,
           ],
         },
-        "words": [],
       }
     `);
   });
@@ -61,7 +60,6 @@ describe("Query", () => {
             0,
           ],
         },
-        "words": [],
       }
     `);
   });
@@ -85,7 +83,6 @@ describe("Query", () => {
             0,
           ],
         },
-        "words": [],
       }
     `);
   });
@@ -109,7 +106,6 @@ describe("Query", () => {
             0,
           ],
         },
-        "words": [],
       }
     `);
   });
@@ -133,7 +129,6 @@ describe("Query", () => {
             0,
           ],
         },
-        "words": [],
       }
     `);
   });
@@ -190,5 +185,159 @@ describe("Query", () => {
 
   test("ascii symbols and emojis are disjoint", () => {
     expect(createQuery("#💩").presentCharacters.size()).toBe(2);
+  });
+
+  test("case insensitivity", () => {
+    expect(createQuery("a")).toEqual(createQuery("A"));
+  });
+});
+
+describe("space handling", () => {
+  test("just a space", () => {
+    expect(createQuery(" ")).toMatchInlineSnapshot(`
+      {
+        "codePoints": [],
+        "lowerCase": "",
+        "presentCharacters": TypedFastBitSet {
+          "words": Uint32Array [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
+        },
+      }
+    `);
+  });
+
+  test("just a lot of spaces", () => {
+    expect(createQuery("                      ")).toMatchInlineSnapshot(`
+      {
+        "codePoints": [],
+        "lowerCase": "",
+        "presentCharacters": TypedFastBitSet {
+          "words": Uint32Array [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
+        },
+      }
+    `);
+  });
+
+  test("2 words", () => {
+    expect(createQuery("abc def")).toMatchInlineSnapshot(`
+      {
+        "codePoints": [
+          97,
+          98,
+          99,
+          32,
+          100,
+          101,
+          102,
+        ],
+        "lowerCase": "abc def",
+        "presentCharacters": TypedFastBitSet {
+          "words": Uint32Array [
+            63,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
+        },
+        "words": [
+          {
+            "codePoints": [
+              97,
+              98,
+              99,
+            ],
+            "lowerCase": "abc",
+          },
+          {
+            "codePoints": [
+              100,
+              101,
+              102,
+            ],
+            "lowerCase": "def",
+          },
+        ],
+      }
+    `);
+  });
+
+  test("3 words", () => {
+    expect(createQuery("abc def ghi")).toMatchInlineSnapshot(`
+      {
+        "codePoints": [
+          97,
+          98,
+          99,
+          32,
+          100,
+          101,
+          102,
+          32,
+          103,
+          104,
+          105,
+        ],
+        "lowerCase": "abc def ghi",
+        "presentCharacters": TypedFastBitSet {
+          "words": Uint32Array [
+            511,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+          ],
+        },
+        "words": [
+          {
+            "codePoints": [
+              97,
+              98,
+              99,
+            ],
+            "lowerCase": "abc",
+          },
+          {
+            "codePoints": [
+              100,
+              101,
+              102,
+            ],
+            "lowerCase": "def",
+          },
+          {
+            "codePoints": [
+              103,
+              104,
+              105,
+            ],
+            "lowerCase": "ghi",
+          },
+        ],
+      }
+    `);
   });
 });
