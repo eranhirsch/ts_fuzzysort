@@ -17,11 +17,11 @@ interface Text {
   readonly lowerCase: string;
 }
 
-interface Query extends Text {
+export interface Query extends Text {
   readonly words?: readonly Omit<Text, "presentCharacters">[];
 }
 
-interface Searchable extends Text {
+export interface Searchable extends Text {
   readonly raw: string;
 }
 
