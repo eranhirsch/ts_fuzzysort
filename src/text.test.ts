@@ -4,6 +4,7 @@ import {
   CODE_POINT_LOWERCASE_A,
   CODE_POINT_LOWERCASE_Z,
   CODE_POINT_REGULAR_SPACE,
+  codePointEncoding,
   createQuery,
 } from "./text";
 
@@ -131,60 +132,6 @@ describe("Query", () => {
         },
       }
     `);
-  });
-
-  test("all characters are different", () => {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    expect(createQuery(alphabet).presentCharacters.size()).toBe(
-      alphabet.length
-    );
-  });
-
-  test("all digits are the same", () => {
-    expect(createQuery("0123456789").presentCharacters.size()).toBe(1);
-  });
-
-  test("all ascii characters are the same", () => {
-    expect(createQuery("$#@^%&*_+=-").presentCharacters.size()).toBe(1);
-  });
-
-  test("all emojis are the same", () => {
-    expect(createQuery("💩🦄").presentCharacters.size()).toBe(1);
-  });
-
-  test("characters and digits are disjoint", () => {
-    const alphabetAndDigit = "abcdefghijklmnopqrstuvwxyz0";
-    expect(createQuery(alphabetAndDigit).presentCharacters.size()).toBe(
-      alphabetAndDigit.length
-    );
-  });
-
-  test("characters and ascii symbols are disjoint", () => {
-    const alphabetAndDigit = "abcdefghijklmnopqrstuvwxyz#";
-    expect(createQuery(alphabetAndDigit).presentCharacters.size()).toBe(
-      alphabetAndDigit.length
-    );
-  });
-
-  test("characters and emojis are disjoint", () => {
-    expect(
-      createQuery("abcdefghijklmnopqrstuvwxyz💩").presentCharacters.size()
-    ).toBe(27);
-  });
-
-  test("digits and ascii chars are disjoint", () => {
-    const alphabetAndDigit = "0#";
-    expect(createQuery(alphabetAndDigit).presentCharacters.size()).toBe(
-      alphabetAndDigit.length
-    );
-  });
-
-  test("digits and emojis are disjoint", () => {
-    expect(createQuery("0💩").presentCharacters.size()).toBe(2);
-  });
-
-  test("ascii symbols and emojis are disjoint", () => {
-    expect(createQuery("#💩").presentCharacters.size()).toBe(2);
   });
 
   test("case insensitivity", () => {
@@ -341,3 +288,57 @@ describe("space handling", () => {
     `);
   });
 });
+
+describe("codePointEncoding", () => {
+  test("each character is a different code", () => {
+    expect(uniqueEncodedValuesCount("abcdefghijklmnopqrstuvwxyz")).toBe(26);
+  });
+
+  test("all digits have the same code", () => {
+    expect(uniqueEncodedValuesCount("0123456789")).toBe(1);
+  });
+
+  test("all ascii symbols have the same code", () => {
+    expect(uniqueEncodedValuesCount("`~!@#$%^&*()_+-=[]{}\\|;:'\",<.>/?")).toBe(
+      1
+    );
+  });
+
+  test("all emojis have the same code", () => {
+    expect(uniqueEncodedValuesCount("💩🦄")).toBe(1);
+  });
+
+  test("characters and digits are disjoint", () => {
+    expect(uniqueEncodedValuesCount("abcdefghijklmnopqrstuvwxyz0")).toBe(27);
+  });
+
+  test("characters and ascii symbols are disjoint", () => {
+    expect(uniqueEncodedValuesCount("abcdefghijklmnopqrstuvwxyz?")).toBe(27);
+  });
+
+  test("characters and emojis are disjoint", () => {
+    expect(uniqueEncodedValuesCount("abcdefghijklmnopqrstuvwxyz💩")).toBe(27);
+  });
+
+  test("digits and ascii symbols are disjoint", () => {
+    expect(uniqueEncodedValuesCount("0?")).toBe(2);
+  });
+
+  test("digits and emojis are disjoint", () => {
+    expect(uniqueEncodedValuesCount("0💩")).toBe(2);
+  });
+
+  test("ascii symbols and emojis are disjoint", () => {
+    expect(uniqueEncodedValuesCount("#💩")).toBe(2);
+  });
+});
+
+function uniqueEncodedValuesCount(characters: string): number {
+  const codes = new Set();
+  for (const char of characters) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const codePoint = char.codePointAt(0)!;
+    codes.add(codePointEncoding(codePoint));
+  }
+  return codes.size;
+}

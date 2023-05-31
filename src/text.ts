@@ -100,7 +100,7 @@ export function createSearchable(raw: string): Searchable {
   };
 }
 
-function codePointEncoding(codePoint: number): number {
+export function codePointEncoding(codePoint: number): number {
   // Bits 0..25 are for each character separately
   return codePoint >= CODE_POINT_LOWERCASE_A &&
     codePoint <= CODE_POINT_LOWERCASE_Z
