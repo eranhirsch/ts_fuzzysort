@@ -12,7 +12,7 @@ const LONG_PHRASES_THRESHOLD = 24;
 const LONG_PHRASES_PENALTY = 10;
 
 export function matchScore(
-  query: Query,
+  query: Omit<Query, "presentCharacters">,
   searchable: Searchable,
   match: readonly number[],
   isStrict: boolean,
@@ -92,7 +92,7 @@ function phrasesPenalty(nextWordBreak: readonly number[]): number {
 }
 
 function substringBonus(
-  query: Query,
+  query: Omit<Query, "presentCharacters">,
   searchable: Searchable,
   match: readonly number[],
   nextWordBreak: readonly number[]
