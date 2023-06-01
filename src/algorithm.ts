@@ -1,6 +1,7 @@
-/* eslint-disable security/detect-object-injection */
-
+import { findConsecutiveSequence, findSequence } from "./sequence";
 import { Query, Searchable } from "./text";
+
+export const MAX_BACKTRACK_ATTEMPTS = 200;
 
 export interface AlgorithmResponse {
   readonly score: number | undefined;
@@ -10,32 +11,21 @@ export function algorithm(
   query: Query,
   searchable: Searchable
 ): AlgorithmResponse | undefined {
-  const matchesSimple: number[] = Array.from({
-    length: query.codePoints.length,
-  });
-
-  let queryIndex = 0; // where we at
-  let queryCodePoint = query.codePoints[queryIndex];
-  for (const [
-    searchableIndex,
-    searchableCodePoint,
-  ] of searchable.codePoints.entries()) {
-    if (queryCodePoint === searchableCodePoint) {
-      matchesSimple[queryIndex] = searchableIndex;
-      queryIndex += 1;
-      queryCodePoint = query.codePoints[queryIndex];
-      if (queryCodePoint === undefined) {
-        // We've found a match for all code points in the query
-        break;
-      }
-    }
-  }
-
-  if (queryIndex < query.codePoints.length) {
-    // We haven't found a match for all code points in the query in the same
-    // order, so this searchable doesn't contain a match (even fuzzy!)
+  const simpleMatchSequence = findSequence(
+    query.codePoints,
+    searchable.codePoints
+  );
+  if (simpleMatchSequence === undefined) {
     return;
   }
+
+  findConsecutiveSequence(
+    query.codePoints,
+    searchable.codePoints,
+    searchable.raw,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    simpleMatchSequence[0]!
+  );
 
   return {
     score: 0,
