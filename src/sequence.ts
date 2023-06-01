@@ -1,9 +1,8 @@
 /* eslint-disable security/detect-object-injection */
 
-import { nextWordBreakIndices } from "./wordBreaks";
-import { MAX_BACKTRACK_ATTEMPTS } from "./algorithm";
+const MAX_BACKTRACK_ATTEMPTS = 200;
 
-export function findSequence(
+export function findSimpleSequence(
   query: readonly number[],
   searchable: readonly number[]
 ): readonly number[] | undefined {
@@ -34,14 +33,12 @@ export function findSequence(
       undefined;
 }
 
-export function findConsecutiveSequence(
+export function findStrictSequence(
   query: readonly number[],
   searchable: readonly number[],
-  searchableRaw: string,
+  nextWordBreak: readonly number[],
   firstMatchingIndex: number
 ): readonly number[] | undefined {
-  const nextWordBreak = nextWordBreakIndices(searchableRaw);
-
   let searchableIndex =
     firstMatchingIndex === 0
       ? 0
