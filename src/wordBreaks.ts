@@ -5,7 +5,7 @@ export function nextWordBreakIndices(input: string): readonly number[] {
 
   let previousWordBreakIndex = 0;
   for (const wordBreakIndex of findWordBreakIndices(characters)) {
-    output.fill(wordBreakIndex, previousWordBreakIndex, wordBreakIndex - 1);
+    output.fill(wordBreakIndex, previousWordBreakIndex, wordBreakIndex);
     previousWordBreakIndex = wordBreakIndex;
   }
   output.fill(characters.length, previousWordBreakIndex);
@@ -13,7 +13,7 @@ export function nextWordBreakIndices(input: string): readonly number[] {
   return output;
 }
 
-function* findWordBreakIndices(
+export function* findWordBreakIndices(
   characters: readonly string[]
 ): Generator<number, undefined> {
   let previousWasUpperCase = false;
