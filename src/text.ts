@@ -1,11 +1,12 @@
 import { TypedFastBitSet } from "typedfastbitset";
-
-export const CODE_POINT_LOWERCASE_A = 97;
-export const CODE_POINT_LOWERCASE_Z = 122;
-export const CODE_POINT_0 = 48;
-export const CODE_POINT_9 = 57;
-export const CODE_POINT_REGULAR_SPACE = 32;
-const CODE_POINT_ASCII_MAX = 0x7f;
+import {
+  CODE_POINT_REGULAR_SPACE,
+  CODE_POINT_LOWERCASE_A,
+  CODE_POINT_LOWERCASE_Z,
+  CODE_POINT_0,
+  CODE_POINT_9,
+  CODE_POINT_ASCII_MAX,
+} from "./CODE_POINTS";
 
 const BIT_DIGIT = 26;
 const BIT_ASCII_SYMBOL = 27;
