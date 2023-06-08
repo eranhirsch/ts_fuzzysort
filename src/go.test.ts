@@ -1,8 +1,8 @@
-import { URLS_AND_TITLES } from "../test/data";
+import { UE4_FILES, URLS_AND_TITLES } from "../test/data";
 import { goStrings } from "./go";
 
-describe("Legacy Tests", () => {
-  test("urls with garbage ids in them match everything too well", () => {
+describe("Ported from farzher/fuzzysort", () => {
+  test("zom in URLS_AND_TITLES", () => {
     const result = goStrings("zom", URLS_AND_TITLES);
     expect(result).toMatchInlineSnapshot(`
       [
@@ -22,6 +22,16 @@ describe("Legacy Tests", () => {
         "aBcDeFgHiJkLmNoPqRsTuVwXyZAbCdEfGhIjKlMnOpQrStUvWxYzaBcDeFgHiJkLmNoPqRsTuVwXyZAbCdEfGhIjKlMnOpQrStUvWxYzaBcDeFgHiJkLmNoPqRsTuVwXyZAbCdEfGhIjKlMnOpQrStUvWxYzaBcDeFgHiJkLmNoPqRsTuVwXyZAbCdEfGhIjKlMnOpQrStUvWxYzaBcDeFgHiJkLmNoPqRsTuVwXyZAbCdEfGhIjKlMnOpQrStUvWxYz",
         "http://phonegap.com/?__vid__=Y29sbGVjdGlvblR5cGU9YWxpYXMBY29sbGVjdGlvbklEPXNjaHZlbmsBc291cmNlPXkuZGVsaWNpb3VzAWNsYXNzPWJvb2ttYXJrAXR5cGU9Ym9va21hcmsBc3VpZD1kNzE2ZGNmNWNmMTBlY2VjNjc5OGQxN2IxOTIzYTU4MA--",
         "http://www.omnipotent.net/jquery.sparkline/?__vid__=Y29sbGVjdGlvblR5cGU9YWxpYXMBY29sbGVjdGlvbklEPWNhbnRvbmliAXNvdXJjZT15LmRlbGljaW91cwFjbGFzcz1ib29rbWFyawF0eXBlPWJvb2ttYXJrAXN1aWQ9ZTZkODhhYzc3NDg5ZDA3YTY5Y2QxOWFkMmZiZmNhMWY-",
+      ]
+    `);
+  });
+
+  test("cman in UE4_FILES", () => {
+    const result = goStrings("cman", UE4_FILES).slice(0, 2);
+    expect(result).toMatchInlineSnapshot(`
+      [
+        "CrowdManager.h",
+        "CheatManager.h",
       ]
     `);
   });
