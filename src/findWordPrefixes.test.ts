@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { findWordPrefixes } from "./sequence";
+import { findWordPrefixes } from "./findWordPrefixes";
 import { nextWordBreakIndices } from "./wordBreaks";
 
 describe("findStrictSequence", () => {
@@ -26,5 +26,4 @@ function wrapper(
   );
 }
 
-const asCodePointsArray = (raw: string) =>
-  [...raw.toLowerCase()].map((char) => char.codePointAt(0)!);
+const asCodePointsArray = (raw: string) => [...raw.toLowerCase()];

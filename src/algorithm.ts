@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { matchScore } from "./score";
-import { findWordPrefixes } from "./sequence";
+import { findWordPrefixes } from "./findWordPrefixes";
 import { indicesOf } from "./indicesOf";
-import { Query, Searchable } from "./text";
+import { matchScore } from "./score";
 import { nextWordBreakIndices } from "./wordBreaks";
 
 export interface AlgorithmResponse {
@@ -12,24 +11,25 @@ export interface AlgorithmResponse {
 }
 
 export function algorithm(
-  query: Omit<Query, "presentCharacters">,
-  searchable: Searchable,
-  isFullTextOnly = false
+  query: readonly string[],
+  text: string,
+  words?: readonly (readonly string[])[]
 ): AlgorithmResponse | undefined {
-  if (!isFullTextOnly && query.words !== undefined) {
-    return multiWordAlgorithm(query, searchable, query.words);
+  if (words !== undefined) {
+    return multiWordAlgorithm(query, text, words);
   }
 
-  const matchSequence = indicesOf(query.codePoints, searchable.codePoints);
+  const searchable = [...text.toLowerCase()];
+  const matchSequence = indicesOf(query, searchable);
   if (matchSequence === undefined) {
     return;
   }
 
-  const nextWordBreak = nextWordBreakIndices(searchable.raw);
+  const nextWordBreak = nextWordBreakIndices(text);
 
   const wordPrefixesMatchSequence = findWordPrefixes(
-    query.codePoints,
-    searchable.codePoints,
+    query,
+    searchable,
     nextWordBreak,
     matchSequence[0]!
   );
@@ -48,16 +48,16 @@ export function algorithm(
 }
 
 function multiWordAlgorithm(
-  fullText: Omit<Query, "presentCharacters">,
-  searchable: Searchable,
-  words: readonly Omit<Query, "presentCharacters">[]
+  query: readonly string[],
+  text: string,
+  words: readonly (readonly string[])[]
 ): AlgorithmResponse | undefined {
   const seenIndices = new Set<number>();
   let score = 0;
 
   let firstSeenIndexLastSearch = 0;
   for (const word of words) {
-    const result = algorithm(word, searchable);
+    const result = algorithm(word, text);
     if (result === undefined) {
       return;
     }
@@ -77,11 +77,7 @@ function multiWordAlgorithm(
   }
 
   // allows a search with spaces that's an exact substring to score well
-  const fullTextResults = algorithm(
-    fullText,
-    searchable,
-    true /* isFullTextOnly */
-  );
+  const fullTextResults = algorithm(query, text);
   if (fullTextResults !== undefined && fullTextResults.score > score) {
     return fullTextResults;
   }

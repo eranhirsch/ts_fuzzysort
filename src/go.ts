@@ -1,6 +1,6 @@
 import { AlgorithmResponse, algorithm } from "./algorithm";
+import { breakWords } from "./asCharacters";
 import { maxCombiner } from "./combiner";
-import { Query, createQuery, createSearchable } from "./text";
 import { digest } from "./digest";
 
 type NonEmptyArray<T> = readonly [T, ...T[]];
@@ -16,8 +16,8 @@ export function goStrings(
   rawQuery: string,
   entities: Iterable<string>
 ): readonly string[] {
-  const query = createQuery(rawQuery);
-
+  const query = [...rawQuery.trim().toLowerCase()];
+  const words = breakWords(query);
   const queryBitMap = digest(rawQuery);
 
   const results: Result<string>[] = [];
@@ -30,8 +30,7 @@ export function goStrings(
       continue;
     }
 
-    const searchable = createSearchable(entity);
-    const result = algorithm(query, searchable);
+    const result = algorithm(query, entity, words);
     if (result !== undefined) {
       results.push({ entity, score: result.score });
     }
@@ -46,8 +45,7 @@ export function go<T>(
   entities: Iterable<T>,
   extractors: NonEmptyArray<Extractor<T>>
 ): T[] {
-  const query = createQuery(rawQuery);
-
+  const query = [...rawQuery.trim().toLowerCase()];
   const queryBitMap = digest(rawQuery);
 
   const results: Result<T>[] = [];
@@ -69,7 +67,7 @@ export function go<T>(
 
 function multiExtractor<T>(
   entity: T,
-  query: Query,
+  query: readonly string[],
   queryBitMap: number,
   extractors: NonEmptyArray<Extractor<T>>
 ): number | undefined {
@@ -90,7 +88,7 @@ function multiExtractor<T>(
 
 function runOnExtractor<T>(
   entity: T,
-  query: Query,
+  query: readonly string[],
   queryBitMap: number,
   extractor: Extractor<T>
 ): AlgorithmResponse | undefined {
@@ -107,6 +105,5 @@ function runOnExtractor<T>(
     return;
   }
 
-  const searchable = createSearchable(extracted);
-  return algorithm(query, searchable);
+  return algorithm(query, extracted);
 }

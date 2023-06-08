@@ -9,8 +9,8 @@ const MAX_BACKTRACK_ATTEMPTS = 200;
  * instead of computing them itself for performance reasons. They are already
  * present at the caller so we don't need to run the logic twice.
  *
- * @param query Code points of the lowercased query.
- * @param searchable Code points of the lowercased searchable.
+ * @param queryCharacters Characters of the lowercased query.
+ * @param textCharacters Characters of the lowercased searchable.
  * @param nextWordBreak [Precomputed] An array of indices to the next word, for
  * each given index of searchable.
  * @param firstMatchingIndex The location of the first code point in query
@@ -19,15 +19,17 @@ const MAX_BACKTRACK_ATTEMPTS = 200;
  * searchable; or `undefined` if no such sequence exists.
  */
 export function findWordPrefixes(
-  query: readonly number[],
-  searchable: readonly number[],
+  // We take characters instead of a raw string because String.prototype.length
+  // doesn't take multi-code point characters into account.
+  queryCharacters: readonly string[],
+  textCharacters: readonly string[],
   nextWordBreak: readonly number[],
   firstMatchingIndex: number
 ): readonly number[] | undefined {
   let index =
     firstMatchingIndex === 0 ? 0 : nextWordBreak[firstMatchingIndex - 1];
 
-  if (index === undefined || index >= searchable.length) {
+  if (index === undefined || index >= textCharacters.length) {
     // The whole match is already part of the last (or only) word.
     return;
   }
@@ -37,16 +39,23 @@ export function findWordPrefixes(
   const output: number[] = [];
   let backtrackAttempts = 0;
 
-  while (output.length < query.length) {
-    if (index !== undefined && query[output.length] === searchable[index]) {
+  for (;;) {
+    if (
+      index !== undefined &&
+      queryCharacters[output.length] === textCharacters[index]
+    ) {
       // We have match within the current word
       output.push(index);
+      if (output.length === queryCharacters.length) {
+        return output;
+      }
+
       index += 1;
       continue;
     }
 
     index = index === undefined ? undefined : nextWordBreak[index];
-    if (index !== undefined && index < searchable.length) {
+    if (index !== undefined && index < textCharacters.length) {
       // We found a mismatch in the current word so we skip to the next word
       continue;
     }
@@ -72,6 +81,4 @@ export function findWordPrefixes(
 
     index = nextWordBreak[lastMatch];
   }
-
-  return output.length === query.length ? output : undefined;
 }

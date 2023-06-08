@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable security/detect-object-injection */
 
-import { Query, Searchable } from "./text";
-
 const PENALTY_MATCH_GROUPS = 12;
 const PENALTY_FIRST_MATCHING_OFFSET = 0.2;
 
@@ -12,15 +10,15 @@ const LONG_PHRASES_THRESHOLD = 24;
 const LONG_PHRASES_PENALTY = 10;
 
 export function matchScore(
-  query: Omit<Query, "presentCharacters">,
-  searchable: Searchable,
+  query: readonly string[],
+  searchable: readonly string[],
   match: readonly number[],
   isStrict: boolean,
   nextWordBreak: readonly number[]
 ): number {
   let score = 0;
 
-  score -= multiGroupPenalty(match, query.codePoints.length);
+  score -= multiGroupPenalty(match, query.length);
 
   score -= offsetPenalty(match);
 
@@ -29,7 +27,7 @@ export function matchScore(
   score /= substringBonus(query, searchable, match, nextWordBreak);
 
   // penalty for longer targets
-  score -= searchable.codePoints.length - query.codePoints.length;
+  score -= searchable.length - query.length;
 
   return score;
 }
@@ -92,18 +90,23 @@ function phrasesPenalty(nextWordBreak: readonly number[]): number {
 }
 
 function substringBonus(
-  query: Omit<Query, "presentCharacters">,
-  searchable: Searchable,
+  query: readonly string[],
+  searchable: readonly string[],
   match: readonly number[],
   nextWordBreak: readonly number[]
 ): number {
   const firstMatchingIndex = match[0]!;
-  if (!searchable.lowerCase.startsWith(query.lowerCase, firstMatchingIndex)) {
+  if (
+    query.some(
+      (character, index) =>
+        character !== searchable[firstMatchingIndex + index]!
+    )
+  ) {
     return 1;
   }
 
   // bonus for being a full substring
-  const bonus = 1 + query.codePoints.length * query.codePoints.length * 1;
+  const bonus = 1 + query.length * query.length * 1;
 
   if (
     firstMatchingIndex === 0 ||
@@ -111,7 +114,7 @@ function substringBonus(
   ) {
     return bonus;
   }
-  // bonus for substring starting on a beginningIndex
 
-  return bonus * (1 + query.codePoints.length * query.codePoints.length * 1);
+  // bonus for substring starting on a beginningIndex
+  return bonus * (1 + query.length * query.length * 1);
 }
