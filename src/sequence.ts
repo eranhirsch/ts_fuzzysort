@@ -2,90 +2,75 @@
 
 const MAX_BACKTRACK_ATTEMPTS = 200;
 
-export function findSimpleSequence(
-  query: readonly number[],
-  searchable: readonly number[]
-): readonly number[] | undefined {
-  const output: number[] = Array.from({
-    length: query.length,
-  });
-
-  let queryIndex = 0; // where we at
-  let queryCodePoint = query[queryIndex];
-
-  for (const [searchableIndex, searchableCodePoint] of searchable.entries()) {
-    if (queryCodePoint === searchableCodePoint) {
-      output[queryIndex] = searchableIndex;
-      queryIndex += 1;
-      queryCodePoint = query[queryIndex];
-      if (queryCodePoint === undefined) {
-        // We've found a match for all code points in the query
-        break;
-      }
-    }
-  }
-
-  return queryIndex === query.length
-    ? output
-    : // We haven't found a match for all code points in the query in the same
-
-      // order, so this searchable doesn't contain a match (even fuzzy!)
-      undefined;
-}
-
-export function findStrictSequence(
+/**
+ * Look for the query as a set of word prefixes in searchable.
+ *
+ * This function takes nextWordBreaks and firstMatchingIndex as arguments
+ * instead of computing them itself for performance reasons. They are already
+ * present at the caller so we don't need to run the logic twice.
+ *
+ * @param query Code points of the lowercased query.
+ * @param searchable Code points of the lowercased searchable.
+ * @param nextWordBreak [Precomputed] An array of indices to the next word, for
+ * each given index of searchable.
+ * @param firstMatchingIndex The location of the first code point in query
+ * inside searchable (the equivalent of running `searchable.indexOf(query[0])`)
+ * @returns A sequence of indices that represent a projection of query on
+ * searchable; or `undefined` if no such sequence exists.
+ */
+export function findWordPrefixes(
   query: readonly number[],
   searchable: readonly number[],
   nextWordBreak: readonly number[],
   firstMatchingIndex: number
 ): readonly number[] | undefined {
-  let searchableIndex =
-    firstMatchingIndex === 0
-      ? 0
-      : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        nextWordBreak[firstMatchingIndex - 1]!;
+  let index =
+    firstMatchingIndex === 0 ? 0 : nextWordBreak[firstMatchingIndex - 1];
 
-  if (searchableIndex >= searchable.length) {
+  if (index === undefined || index >= searchable.length) {
     // The whole match is already part of the last (or only) word.
     return;
   }
 
+  // We use the length of output as an index into the query, so we can't create
+  // a sparse array here.
   const output: number[] = [];
-
-  // Our target string successfully matched all characters in sequence!
-  // Let's try a more advanced and strict test to improve the score
-  // only count it as a match if it's consecutive or a beginning character!
   let backtrackAttempts = 0;
+
   while (output.length < query.length) {
-    if (query[output.length] === searchable[searchableIndex]) {
-      output.push(searchableIndex);
-      searchableIndex += 1;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      searchableIndex = nextWordBreak[searchableIndex]!;
-      if (searchableIndex >= searchable.length) {
-        // We failed to find a good spot for this search char, go back to the previous search char and force it forward
-        backtrackAttempts += 1;
-        if (backtrackAttempts > MAX_BACKTRACK_ATTEMPTS) {
-          // exponential backtracking is taking too long, just give up and
-          // return a bad match
-          break;
-        }
-
-        // We pop the last match from the result and ignore it, skipping to the
-        // next word and trying to match it again
-        const lastMatch = output.pop();
-        if (lastMatch === undefined) {
-          // This should be impossible, it means that we haven't even found the
-          // match that we found with findSequence. We should probably throw
-          // here...
-          break;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        searchableIndex = nextWordBreak[lastMatch]!;
-      }
+    if (index !== undefined && query[output.length] === searchable[index]) {
+      // We have match within the current word
+      output.push(index);
+      index += 1;
+      continue;
     }
+
+    index = index === undefined ? undefined : nextWordBreak[index];
+    if (index !== undefined && index < searchable.length) {
+      // We found a mismatch in the current word so we skip to the next word
+      continue;
+    }
+
+    // We've scanned the whole searchable and weren't able to match word
+    // word prefixes. We can try "skipping earlier" to see if we can match
+    // prefixes differently.
+
+    backtrackAttempts += 1;
+    if (backtrackAttempts > MAX_BACKTRACK_ATTEMPTS) {
+      // We've attempted to many variations, let's give up so we remain quick.
+      return;
+    }
+
+    // We pop the last match from the result so we can try matching it with a
+    // later word in searchable.
+    const lastMatch = output.pop();
+    if (lastMatch === undefined) {
+      // We've retried all possible variations, the query simply doesn't exist
+      // as a set of word prefixes in searchable.
+      return;
+    }
+
+    index = nextWordBreak[lastMatch];
   }
 
   return output.length === query.length ? output : undefined;

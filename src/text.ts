@@ -1,4 +1,3 @@
-import { TypedFastBitSet } from "typedfastbitset";
 import {
   CODE_POINT_REGULAR_SPACE,
   CODE_POINT_LOWERCASE_A,
@@ -14,7 +13,6 @@ const BIT_OTHER = 28;
 
 interface Text {
   readonly codePoints: readonly number[];
-  readonly presentCharacters: TypedFastBitSet;
   readonly lowerCase: string;
 }
 
@@ -34,8 +32,6 @@ export function createQuery(raw: string): Query {
 
   let words: Omit<Text, "presentCharacters">[] | undefined;
 
-  const presentCharacters = new TypedFastBitSet();
-
   let lastSpace = -1;
   for (const char of lowerCase) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- There's no easy around this
@@ -48,8 +44,6 @@ export function createQuery(raw: string): Query {
         words.push(sliceLastWord(codePoints, lowerCase, lastSpace));
       }
       lastSpace = codePoints.length;
-    } else {
-      presentCharacters.add(codePointEncoding(codePoint));
     }
 
     codePoints.push(codePoint);
@@ -63,7 +57,6 @@ export function createQuery(raw: string): Query {
   return {
     lowerCase,
     codePoints,
-    presentCharacters,
     ...(words !== undefined && { words }),
   };
 }
@@ -72,22 +65,16 @@ export function createSearchable(raw: string): Searchable {
   const lowerCase = raw.toLowerCase();
 
   const codePoints: number[] = [];
-  const presentCharacters = new TypedFastBitSet();
 
   for (const char of lowerCase) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- There's no easy around this
     const codePoint = char.codePointAt(0)!;
     codePoints.push(codePoint);
-
-    if (codePoint !== CODE_POINT_REGULAR_SPACE) {
-      presentCharacters.add(codePointEncoding(codePoint));
-    }
   }
 
   return {
     raw,
     codePoints,
-    presentCharacters,
     lowerCase,
   };
 }

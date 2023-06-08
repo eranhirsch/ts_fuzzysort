@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import { matchScore } from "./score";
-import { findSimpleSequence, findStrictSequence } from "./sequence";
+import { findWordPrefixes } from "./sequence";
+import { indicesOf } from "./indicesOf";
 import { Query, Searchable } from "./text";
 import { nextWordBreakIndices } from "./wordBreaks";
 
@@ -18,31 +20,27 @@ export function algorithm(
     return multiWordAlgorithm(query, searchable, query.words);
   }
 
-  const simpleMatchSequence = findSimpleSequence(
-    query.codePoints,
-    searchable.codePoints
-  );
-  if (simpleMatchSequence === undefined) {
+  const matchSequence = indicesOf(query.codePoints, searchable.codePoints);
+  if (matchSequence === undefined) {
     return;
   }
 
   const nextWordBreak = nextWordBreakIndices(searchable.raw);
 
-  const strictMatchSequence = findStrictSequence(
+  const wordPrefixesMatchSequence = findWordPrefixes(
     query.codePoints,
     searchable.codePoints,
     nextWordBreak,
-
-    simpleMatchSequence[0]!
+    matchSequence[0]!
   );
 
-  const matchingIndices = strictMatchSequence ?? simpleMatchSequence;
+  const matchingIndices = wordPrefixesMatchSequence ?? matchSequence;
 
   const score = matchScore(
     query,
     searchable,
     matchingIndices,
-    strictMatchSequence !== undefined,
+    wordPrefixesMatchSequence !== undefined,
     nextWordBreak
   );
 
