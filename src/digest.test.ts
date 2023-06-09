@@ -1,5 +1,39 @@
 import { digest } from "./digest";
 
+describe("sanity", () => {
+  test("empty", () => {
+    expect(digest("")).toBe(0);
+  });
+
+  test("spaces", () => {
+    expect(digest("          ")).toBe(0);
+  });
+
+  test("characters", () => {
+    expect(digest("abcd")).toBe(0xf);
+  });
+
+  test("digits", () => {
+    expect(digest("0123")).toBe(0x4_00_00_00);
+  });
+
+  test("ascii", () => {
+    expect(digest("&@*#")).toBe(0x8_00_00_00);
+  });
+
+  test("emojis", () => {
+    expect(digest("💩🦄")).toBe(0x10_00_00_00);
+  });
+
+  test("all", () => {
+    expect(digest("abcdefghijklmnopqrstuvwxyz0=🦄")).toBe(0x1f_ff_ff_ff);
+  });
+});
+
+test("space doesn't matter", () => {
+  expect(digest("a 0 % 🦄")).toBe(digest("a0%🦄"));
+});
+
 describe("encoding uniqueness", () => {
   test("each character is a different code", () => {
     expect(uniqueEncodedValuesCount("abcdefghijklmnopqrstuvwxyz")).toBe(26);
@@ -42,6 +76,17 @@ describe("encoding uniqueness", () => {
   test("ascii symbols and emojis are disjoint", () => {
     expect(uniqueEncodedValuesCount("#💩")).toBe(2);
   });
+
+  test.each([..."abcdefghijklmnopqrstuvwxyz"])(
+    "upper case has same code (%s)",
+    (character) => {
+      expect(
+        uniqueEncodedValuesCount(
+          `${character.toLowerCase()}${character.toUpperCase()}`
+        )
+      ).toBe(1);
+    }
+  );
 });
 
 const uniqueEncodedValuesCount = (characters: string) =>
