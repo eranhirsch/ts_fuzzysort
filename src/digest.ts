@@ -8,7 +8,7 @@ export function digest(raw: string): number {
   return bitMap;
 }
 
-export function characterBit(character: string): number {
+function characterBit(character: string): number {
   switch (character) {
     case " ":
       // Spaces are skipped!

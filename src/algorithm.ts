@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { findWordPrefixes } from "./findWordPrefixes";
-import { indicesOf } from "./indicesOf";
+import { indicesOf } from "./utils/indicesOf";
 import { matchScore } from "./score";
 import { nextWordBreakIndices } from "./wordBreaks";
 
@@ -13,9 +13,9 @@ export interface AlgorithmResponse {
 export function algorithm(
   query: readonly string[],
   text: string,
-  words?: readonly (readonly string[])[]
+  words: readonly (readonly string[])[] = []
 ): AlgorithmResponse | undefined {
-  if (words !== undefined) {
+  if (words.length > 1) {
     return multiWordAlgorithm(query, text, words);
   }
 

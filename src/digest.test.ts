@@ -1,6 +1,6 @@
-import { characterBit } from "./digest";
+import { digest } from "./digest";
 
-describe("codePointEncoding", () => {
+describe("encoding uniqueness", () => {
   test("each character is a different code", () => {
     expect(uniqueEncodedValuesCount("abcdefghijklmnopqrstuvwxyz")).toBe(26);
   });
@@ -44,10 +44,5 @@ describe("codePointEncoding", () => {
   });
 });
 
-function uniqueEncodedValuesCount(characters: string): number {
-  const codes = new Set();
-  for (const character of characters) {
-    codes.add(characterBit(character));
-  }
-  return codes.size;
-}
+const uniqueEncodedValuesCount = (characters: string) =>
+  new Set([...characters].map((character) => digest(character))).size;

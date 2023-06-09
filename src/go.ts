@@ -1,5 +1,5 @@
 import { AlgorithmResponse, algorithm } from "./algorithm";
-import { breakWords } from "./asCharacters";
+import { splitArray } from "./utils/splitArray";
 import { maxCombiner } from "./combiner";
 import { digest } from "./digest";
 
@@ -12,12 +12,14 @@ interface Result<T> {
   readonly score: number;
 }
 
+const WORDS_SEPARATOR = " ";
+
 export function goStrings(
   rawQuery: string,
   entities: Iterable<string>
 ): readonly string[] {
   const query = [...rawQuery.trim().toLowerCase()];
-  const words = breakWords(query);
+  const words = splitArray(query, WORDS_SEPARATOR);
   const queryBitMap = digest(rawQuery);
 
   const results: Result<string>[] = [];
