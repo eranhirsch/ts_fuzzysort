@@ -1,4 +1,9 @@
 {
   "editor.formatOnSave": true,
-  "cSpell.ignorePaths": ["node_modules", "package-lock.json", "test/data"]
+  "cSpell.ignorePaths": [
+    "**/*.test.ts",
+    "node_modules",
+    "package-lock.json",
+    "test/data"
+  ]
 }
