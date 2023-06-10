@@ -1,7 +1,7 @@
-import { AlgorithmResponse } from "./algorithm";
+import { FuzzyMatch } from "./fuzzyMatch";
 
 export function maxCombiner(
-  results: readonly AlgorithmResponse[]
+  results: readonly FuzzyMatch[]
 ): number | undefined {
   let max: number | undefined;
   for (const { score } of results) {

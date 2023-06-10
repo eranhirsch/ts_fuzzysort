@@ -1,15 +1,11 @@
-import { AlgorithmResponse, algorithm } from "./algorithm";
-import { splitArray } from "./utils/splitArray";
-import { maxCombiner } from "./combiner";
 import { digest } from "./digest";
-
-type NonEmptyArray<T> = readonly [T, ...T[]];
-
-type Extractor<T> = (entity: T) => string | undefined;
+import { FuzzyMatch, fuzzyMatch } from "./fuzzyMatch";
+import { fuzzyMatchWords } from "./fuzzyMatchWords";
+import { splitArray } from "./utils/splitArray";
 
 interface Result<T> {
   readonly entity: T;
-  readonly score: number;
+  readonly match: FuzzyMatch;
 }
 
 const WORDS_SEPARATOR = " ";
@@ -20,92 +16,38 @@ export function goStrings(
 ): readonly string[] {
   const query = [...rawQuery.trim().toLowerCase()];
   const words = splitArray(query, WORDS_SEPARATOR);
-  const queryBitMap = digest(rawQuery);
+  const queryDigest = digest(rawQuery);
 
   const results: Result<string>[] = [];
 
-  for (const entity of entities) {
-    const bitmap = digest(entity);
+  // TODO [2024-01-01]: We extract this condition check to avoid having to check
+  // the constant words array on every iteration, but it might actually be more
+  // expensive because of the extra arrow function required, so we need to
+  // benchmark this and pick the better option.
+  const matchFunction =
+    words.length === 1
+      ? fuzzyMatch
+      : (query: readonly string[], text: string) =>
+          fuzzyMatchWords(words, query, text);
 
-    if ((queryBitMap & bitmap) !== queryBitMap) {
-      // The query has characters which are not in the extracted string
+  for (const entity of entities) {
+    const entityDigest = digest(entity);
+
+    // This checks if all bits in the queryDigest are enabled in the
+    // entityDigest. We don't extract this to a function to not incur a function
+    // call for each check.
+    if ((queryDigest & entityDigest) !== queryDigest) {
+      // The entity doesn't contain all characters needed by query so we can
+      // skip it without running a full text scan on it.
       continue;
     }
 
-    const result = algorithm(query, entity, words);
-    if (result !== undefined) {
-      results.push({ entity, score: result.score });
+    const match = matchFunction(query, entity);
+    if (match !== undefined) {
+      results.push({ entity, match });
     }
   }
 
-  results.sort(({ score: a }, { score: b }) => b - a);
+  results.sort(({ match: { score: a } }, { match: { score: b } }) => b - a);
   return results.map(({ entity }) => entity);
-}
-
-export function go<T>(
-  rawQuery: string,
-  entities: Iterable<T>,
-  extractors: NonEmptyArray<Extractor<T>>
-): T[] {
-  const query = [...rawQuery.trim().toLowerCase()];
-  const queryBitMap = digest(rawQuery);
-
-  const results: Result<T>[] = [];
-
-  for (const entity of entities) {
-    const score =
-      extractors.length > 1
-        ? multiExtractor(entity, query, queryBitMap, extractors)
-        : runOnExtractor(entity, query, queryBitMap, extractors[0])?.score;
-
-    if (score !== undefined) {
-      results.push({ entity, score });
-    }
-  }
-
-  results.sort(({ score: a }, { score: b }) => b - a);
-  return results.map(({ entity }) => entity);
-}
-
-function multiExtractor<T>(
-  entity: T,
-  query: readonly string[],
-  queryBitMap: number,
-  extractors: NonEmptyArray<Extractor<T>>
-): number | undefined {
-  const extractorResults: AlgorithmResponse[] = [];
-  for (const extractor of extractors) {
-    const extractorResult = runOnExtractor(
-      entity,
-      query,
-      queryBitMap,
-      extractor
-    );
-    if (extractorResult !== undefined) {
-      extractorResults.push(extractorResult);
-    }
-  }
-  return maxCombiner(extractorResults);
-}
-
-function runOnExtractor<T>(
-  entity: T,
-  query: readonly string[],
-  queryBitMap: number,
-  extractor: Extractor<T>
-): AlgorithmResponse | undefined {
-  const extracted = extractor(entity);
-  if (extracted === undefined) {
-    // This extractor is irrelevant for this entity
-    return;
-  }
-
-  const bitmap = digest(extracted);
-
-  if ((queryBitMap & bitmap) !== queryBitMap) {
-    // The query has characters which are not in the extracted string
-    return;
-  }
-
-  return algorithm(query, extracted);
 }
