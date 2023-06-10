@@ -5,5 +5,7 @@
     "node_modules",
     "package-lock.json",
     "test/data"
-  ]
+  ],
+  // TODO [2023-07-01]: Remove this, check up on https://github.com/prettier/prettier-vscode/issues/3020
+  "prettier.prettierPath": "./node_modules/prettier"
 }
