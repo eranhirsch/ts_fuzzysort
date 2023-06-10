@@ -3,6 +3,8 @@
 
   "include": ["src/**/*", ".eslintrc.js", "*.config.js", "test/**/*"],
 
+  "exclude": ["src/__legacy"],
+
   "extends": "@tsconfig/strictest/tsconfig.json",
 
   "compilerOptions": {

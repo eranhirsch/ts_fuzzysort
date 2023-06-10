@@ -1,7 +1,3 @@
-/* eslint-disable unicorn/no-abusive-eslint-disable */
-/* eslint-disable */
-// @ts-nocheck
-
 // https://github.com/farzher/fuzzysort v2.0.4
 /*
   SublimeText-like Fuzzy Search

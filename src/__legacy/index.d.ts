@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/array-type */
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/prefer-function-type */
-
 declare namespace Fuzzysort {
   interface Result {
     /**

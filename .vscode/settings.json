@@ -4,6 +4,7 @@
     "**/*.test.ts",
     "node_modules",
     "package-lock.json",
+    "src/__legacy",
     "test/data"
   ],
   // TODO [2023-07-01]: Remove this, check up on https://github.com/prettier/prettier-vscode/issues/3020
