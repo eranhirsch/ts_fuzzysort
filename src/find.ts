@@ -10,15 +10,16 @@ interface Result<T> {
 
 const WORDS_SEPARATOR = " ";
 
-export function findInStrings(
+export function find<T>(
   rawQuery: string,
-  entities: Iterable<string>
-): readonly string[] {
+  entities: Iterable<T>,
+  extractor: (entity: T) => string
+): readonly T[] {
   const query = [...rawQuery.trim().toLowerCase()];
   const words = splitArray(query, WORDS_SEPARATOR);
   const queryDigest = digest(rawQuery);
 
-  const results: Result<string>[] = [];
+  const results: Result<T>[] = [];
 
   // TODO [2024-01-01]: We extract this condition check to avoid having to check
   // the constant words array on every iteration, but it might actually be more
@@ -31,7 +32,8 @@ export function findInStrings(
           fuzzyMatchWords(words, query, text);
 
   for (const entity of entities) {
-    const entityDigest = digest(entity);
+    const text = extractor(entity);
+    const entityDigest = digest(text);
 
     // This checks if all bits in the queryDigest are enabled in the
     // entityDigest. We don't extract this to a function to not incur a function
@@ -42,7 +44,7 @@ export function findInStrings(
       continue;
     }
 
-    const match = matchFunction(query, entity);
+    const match = matchFunction(query, text);
     if (match !== undefined) {
       results.push({ entity, match });
     }

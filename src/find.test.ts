@@ -1,9 +1,9 @@
 import { UE4_FILES, URLS_AND_TITLES } from "../test/data";
-import { findInStrings } from "./find";
+import { find } from "./find";
 
 describe("Ported from farzher/fuzzysort", () => {
   test("zom in URLS_AND_TITLES", () => {
-    const result = findInStrings("zom", URLS_AND_TITLES);
+    const result = find("zom", URLS_AND_TITLES, (text) => text);
     expect(result).toMatchInlineSnapshot(`
       [
         "jQuery Zoom",
@@ -27,7 +27,7 @@ describe("Ported from farzher/fuzzysort", () => {
   });
 
   test("cman in UE4_FILES", () => {
-    const result = findInStrings("cman", UE4_FILES).slice(0, 2);
+    const result = find("cman", UE4_FILES, (text) => text).slice(0, 2);
     expect(result).toMatchInlineSnapshot(`
       [
         "CrowdManager.h",
