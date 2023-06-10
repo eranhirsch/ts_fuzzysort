@@ -10,7 +10,7 @@ interface Result<T> {
 
 const WORDS_SEPARATOR = " ";
 
-export function goStrings(
+export function findInStrings(
   rawQuery: string,
   entities: Iterable<string>
 ): readonly string[] {

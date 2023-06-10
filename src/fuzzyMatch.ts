@@ -12,19 +12,19 @@ export interface FuzzyMatch {
 
 export function fuzzyMatch(
   query: readonly string[],
-  text: string
+  textRaw: string
 ): FuzzyMatch | undefined {
-  const searchable = [...text.toLowerCase()];
-  const matchSequence = indicesOf(query, searchable);
+  const text = [...textRaw.toLowerCase()];
+  const matchSequence = indicesOf(query, text);
   if (matchSequence === undefined) {
     return;
   }
 
-  const nextWordBreak = nextWordBreakIndices(text);
+  const nextWordBreak = nextWordBreakIndices(textRaw);
 
   const wordPrefixesMatchSequence = findWordPrefixes(
     query,
-    searchable,
+    text,
     nextWordBreak,
     matchSequence[0]!
   );
@@ -33,7 +33,7 @@ export function fuzzyMatch(
 
   const score = matchScore(
     query,
-    searchable,
+    text,
     indices,
     wordPrefixesMatchSequence !== undefined,
     nextWordBreak

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { FuzzyMatch, fuzzyMatch } from "./fuzzyMatch";
+import { fuzzyMatch, type FuzzyMatch } from "./fuzzyMatch";
 
 export function fuzzyMatchWords(
   words: readonly (readonly string[])[],
