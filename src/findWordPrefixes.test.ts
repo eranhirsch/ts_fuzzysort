@@ -1,20 +1,37 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
+import { asCharactersArray } from "../test/asCharactersArray";
 import { findWordPrefixes } from "./findWordPrefixes";
 import { nextWordBreakIndices } from "./wordBreaks";
 
-describe("findStrictSequence", () => {
-  test("bad case we found", () => {
-    wrapper("zom", "http://www.jacklmoore.com/zoom");
-  });
+// Ported from farzher/fuzzysort
+describe("legacy", () => {
+  test(
+    "multiple backoff is fast",
+    () => {
+      expect(
+        simplifiedFindWordPrefixes(
+          "aaaaaaaaaaab",
+          "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a xb"
+        )
+      ).toEqual(undefined);
+    },
+    { timeout: 16 }
+  );
 });
 
-function wrapper(
+test("first match is at last word and no prefix matches", () => {
+  expect(
+    simplifiedFindWordPrefixes("zom", "http://www.jacklmoore.com/zoom")
+  ).toEqual(undefined);
+});
+
+function simplifiedFindWordPrefixes(
   query: string,
   searchable: string
 ): readonly number[] | undefined {
-  const queryCodePoints = asCodePointsArray(query);
-  const searchableCodePoints = asCodePointsArray(searchable);
+  const queryCodePoints = asCharactersArray(query);
+  const searchableCodePoints = asCharactersArray(searchable);
 
   return findWordPrefixes(
     queryCodePoints,
@@ -25,5 +42,3 @@ function wrapper(
     searchableCodePoints.indexOf(queryCodePoints[0]!)
   );
 }
-
-const asCodePointsArray = (raw: string) => [...raw.toLowerCase()];
