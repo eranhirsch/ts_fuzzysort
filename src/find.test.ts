@@ -1,7 +1,8 @@
 import { UE4_FILES, URLS_AND_TITLES } from "../test/data";
 import { find } from "./find";
 
-describe("Ported from farzher/fuzzysort", () => {
+// Ported from farzher/fuzzysort
+describe("legacy", () => {
   test("zom in URLS_AND_TITLES", () => {
     const result = find("zom", URLS_AND_TITLES, (text) => text);
     expect(result).toMatchInlineSnapshot(`
