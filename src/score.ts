@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable security/detect-object-injection */
 
+import { includesSequence } from "./utils/includesSequence";
 import { type NonEmptyArray } from "./utils/isNonEmpty";
 
 const PENALTY_MATCH_GROUPS = 12;
@@ -36,7 +37,7 @@ export function matchScore(
 
 // penalty for more groups
 function multiGroupPenalty(
-  match: readonly number[],
+  match: NonEmptyArray<number>,
   queryLength: number
 ): number {
   let groupPositionPenalty = 0;
@@ -50,7 +51,7 @@ function multiGroupPenalty(
   }
 
   const unmatchedDistance =
-    match[queryLength - 1]! - match[0]! - (queryLength - 1);
+    match[queryLength - 1]! - match[0] - (queryLength - 1);
 
   const distancePenalty =
     (PENALTY_MATCH_GROUPS + unmatchedDistance) * extraMatchGroupCount;
@@ -59,17 +60,8 @@ function multiGroupPenalty(
 }
 
 // penalty for not starting near the beginning
-function offsetPenalty(match: readonly number[]): number {
-  const firstMatchingIndex = match[0]!;
-
-  if (firstMatchingIndex === 0) {
-    return 0;
-  }
-
-  return (
-    firstMatchingIndex * firstMatchingIndex * PENALTY_FIRST_MATCHING_OFFSET
-  );
-}
+const offsetPenalty = ([firstMatchingIndex]: NonEmptyArray<number>): number =>
+  firstMatchingIndex * firstMatchingIndex * PENALTY_FIRST_MATCHING_OFFSET;
 
 // successStrict on a target with too many beginning indexes loses points
 // for being a bad target
@@ -94,16 +86,10 @@ function phrasesPenalty(nextWordBreak: readonly number[]): number {
 function substringBonus(
   query: readonly string[],
   searchable: readonly string[],
-  match: NonEmptyArray<number>,
+  [firstMatchingIndex]: NonEmptyArray<number>,
   nextWordBreak: readonly number[]
 ): number {
-  const firstMatchingIndex = match[0];
-  if (
-    query.some(
-      (character, index) =>
-        character !== searchable[firstMatchingIndex + index]!
-    )
-  ) {
+  if (!includesSequence(searchable, query, firstMatchingIndex)) {
     return 1;
   }
 

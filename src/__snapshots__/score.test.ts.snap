@@ -1,6 +1,126 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 'sendor.battery_life360_iphone_6' 1`] = `
+exports[`legacy > scoring 1`] = `
+[
+  [
+    "n",
+    "o",
+    "t",
+    "e",
+  ],
+  [
+    "n",
+    "o",
+    "d",
+    "e",
+    "/",
+    "n",
+    "o",
+    "t",
+    "e",
+  ],
+  [
+    0,
+    1,
+    7,
+    8,
+  ],
+  true,
+  [
+    4,
+    4,
+    4,
+    4,
+    5,
+    7,
+    7,
+    9,
+    9,
+  ],
+]
+`;
+
+exports[`legacy > scoring 2`] = `
+[
+  0,
+  1,
+  7,
+  8,
+]
+`;
+
+exports[`legacy > scoring 3`] = `
+[
+  [
+    "n",
+    "o",
+    "t",
+    "e",
+  ],
+  [
+    "n",
+    "o",
+    "t",
+    " ",
+    "o",
+    "n",
+    "e",
+    " ",
+    "t",
+    "h",
+    "a",
+    "t",
+    " ",
+    "e",
+    "v",
+    "e",
+    "n",
+    "i",
+    "n",
+    "g",
+  ],
+  [
+    0,
+    1,
+    2,
+    13,
+  ],
+  true,
+  [
+    3,
+    3,
+    3,
+    4,
+    7,
+    7,
+    7,
+    8,
+    12,
+    12,
+    12,
+    12,
+    13,
+    20,
+    20,
+    20,
+    20,
+    20,
+    20,
+    20,
+  ],
+]
+`;
+
+exports[`legacy > scoring 4`] = `
+[
+  0,
+  1,
+  2,
+  13,
+]
+`;
+
+exports[`legacy > substring not at start of word 1`] = `
 [
   [
     "e",
@@ -96,7 +216,7 @@ exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 's
 ]
 `;
 
-exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 'sendor.battery_life360_iphone_6' 2`] = `
+exports[`legacy > substring not at start of word 2`] = `
 [
   1,
   8,
@@ -111,7 +231,7 @@ exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 's
 ]
 `;
 
-exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 'sendor.battery_life360_iphone_6' 3`] = `
+exports[`legacy > substring not at start of word 3`] = `
 [
   [
     "e",
@@ -207,7 +327,7 @@ exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 's
 ]
 `;
 
-exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 'sendor.battery_life360_iphone_6' 4`] = `
+exports[`legacy > substring not at start of word 4`] = `
 [
   1,
   5,
@@ -219,125 +339,5 @@ exports[`legacy > for query 'er.life360': 'device-tracker.life360_iphone_6' > 's
   19,
   20,
   21,
-]
-`;
-
-exports[`legacy > for query 'note': 'node/NoTe' > 'not one that evening' 1`] = `
-[
-  [
-    "n",
-    "o",
-    "t",
-    "e",
-  ],
-  [
-    "n",
-    "o",
-    "d",
-    "e",
-    "/",
-    "n",
-    "o",
-    "t",
-    "e",
-  ],
-  [
-    0,
-    1,
-    7,
-    8,
-  ],
-  true,
-  [
-    4,
-    4,
-    4,
-    4,
-    5,
-    7,
-    7,
-    9,
-    9,
-  ],
-]
-`;
-
-exports[`legacy > for query 'note': 'node/NoTe' > 'not one that evening' 2`] = `
-[
-  0,
-  1,
-  7,
-  8,
-]
-`;
-
-exports[`legacy > for query 'note': 'node/NoTe' > 'not one that evening' 3`] = `
-[
-  [
-    "n",
-    "o",
-    "t",
-    "e",
-  ],
-  [
-    "n",
-    "o",
-    "t",
-    " ",
-    "o",
-    "n",
-    "e",
-    " ",
-    "t",
-    "h",
-    "a",
-    "t",
-    " ",
-    "e",
-    "v",
-    "e",
-    "n",
-    "i",
-    "n",
-    "g",
-  ],
-  [
-    0,
-    1,
-    2,
-    13,
-  ],
-  true,
-  [
-    3,
-    3,
-    3,
-    4,
-    7,
-    7,
-    7,
-    8,
-    12,
-    12,
-    12,
-    12,
-    13,
-    20,
-    20,
-    20,
-    20,
-    20,
-    20,
-    20,
-  ],
-]
-`;
-
-exports[`legacy > for query 'note': 'node/NoTe' > 'not one that evening' 4`] = `
-[
-  0,
-  1,
-  2,
-  13,
 ]
 `;

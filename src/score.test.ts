@@ -9,18 +9,32 @@ import { type NonEmptyArray } from "./utils/isNonEmpty";
 import { nextWordBreakIndices } from "./wordBreaks";
 
 describe("legacy", () => {
-  test.each([
-    ["note", "node/NoTe", "not one that evening"],
-    [
-      "er.life360",
-      "device-tracker.life360_iphone_6",
-      "sendor.battery_life360_iphone_6",
-    ],
-  ])("for query '%s': '%s' > '%s'", (queryRaw, text1, text2) => {
-    const query = asCharactersArray(queryRaw);
+  test("scoring", () => {
+    const query = asCharactersArray("note");
 
-    const parametersA = validatedParametersForMatchScore(query, text1);
-    const parametersB = validatedParametersForMatchScore(query, text2);
+    const parametersA = validatedParametersForMatchScore(query, "node/NoTe");
+    const parametersB = validatedParametersForMatchScore(
+      query,
+      "not one that evening"
+    );
+
+    const score1 = matchScore(...parametersA);
+    const score2 = matchScore(...parametersB);
+
+    expect(score1).greaterThan(score2);
+  });
+
+  test("substring not at start of word", () => {
+    const query = asCharactersArray("er.life360");
+
+    const parametersA = validatedParametersForMatchScore(
+      query,
+      "device-tracker.life360_iphone_6"
+    );
+    const parametersB = validatedParametersForMatchScore(
+      query,
+      "sendor.battery_life360_iphone_6"
+    );
 
     const score1 = matchScore(...parametersA);
     const score2 = matchScore(...parametersB);
