@@ -1,5 +1,7 @@
 /* eslint-disable security/detect-object-injection */
 
+import { type NonEmptyArray } from "./utils/isNonEmpty";
+
 const MAX_BACKTRACK_ATTEMPTS = 200;
 
 /**
@@ -21,11 +23,11 @@ const MAX_BACKTRACK_ATTEMPTS = 200;
 export function findWordPrefixes(
   // We take characters instead of a raw string because String.prototype.length
   // doesn't take multi-code point characters into account.
-  queryCharacters: readonly string[],
+  queryCharacters: NonEmptyArray<string>,
   textCharacters: readonly string[],
   nextWordBreak: readonly number[],
   firstMatchingIndex: number
-): readonly number[] | undefined {
+): NonEmptyArray<number> | undefined {
   let index =
     firstMatchingIndex === 0 ? 0 : nextWordBreak[firstMatchingIndex - 1];
 
@@ -47,6 +49,7 @@ export function findWordPrefixes(
       // We have match within the current word
       output.push(index);
       if (output.length === queryCharacters.length) {
+        // @ts-expect-error [ts2322] - Output is guaranteed to have at least 1 element, we just pushed it!
         return output;
       }
 

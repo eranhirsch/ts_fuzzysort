@@ -5,6 +5,7 @@ import { findWordPrefixes } from "./findWordPrefixes";
 import { fuzzyMatch } from "./fuzzyMatch";
 import { matchScore } from "./score";
 import { indicesOf } from "./utils/indicesOf";
+import { type NonEmptyArray } from "./utils/isNonEmpty";
 import { nextWordBreakIndices } from "./wordBreaks";
 
 describe("legacy", () => {
@@ -38,7 +39,7 @@ describe("legacy", () => {
  * haven't diverged.
  */
 function validatedParametersForMatchScore(
-  query: readonly string[],
+  query: NonEmptyArray<string>,
   text: string
 ) {
   const parameters = fakeFuzzyMatchResults(query, text);
@@ -57,7 +58,7 @@ function validatedParametersForMatchScore(
  * sent to matchScore so that we can call the function ourselves as part of our
  * tests.
  */
-function fakeFuzzyMatchResults(query: readonly string[], textRaw: string) {
+function fakeFuzzyMatchResults(query: NonEmptyArray<string>, textRaw: string) {
   const text = [...textRaw.toLowerCase()];
   const matchSequence = indicesOf(query, text);
   if (matchSequence === undefined) {

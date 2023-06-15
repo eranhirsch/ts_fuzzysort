@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { fuzzyMatch, type FuzzyMatch } from "./fuzzyMatch";
+import { type NonEmptyArray } from "./utils/isNonEmpty";
 
 export function fuzzyMatchWords(
-  words: readonly (readonly string[])[],
-  query: readonly string[],
+  words: readonly NonEmptyArray<string>[],
+  query: NonEmptyArray<string>,
   text: string
 ): FuzzyMatch | undefined {
   const seenIndices = new Set<number>();

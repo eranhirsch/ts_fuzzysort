@@ -8,10 +8,10 @@
  * @returns A sequence of indices that represent a projection of needles on
  * haystack; or `undefined` if no such sequence exists.
  */
-export function indicesOf<T>(
-  needles: readonly T[],
-  haystack: readonly T[]
-): readonly number[] | undefined {
+export function indicesOf<Needles extends readonly unknown[] | []>(
+  needles: Needles,
+  haystack: readonly Needles[number][]
+): { readonly [P in keyof Needles]: number } | undefined {
   const output: number[] = [];
 
   for (const [searchableIndex, searchableCodePoint] of haystack.entries()) {
@@ -22,6 +22,7 @@ export function indicesOf<T>(
     output.push(searchableIndex);
     if (output.length === needles.length) {
       // We've found a match for all code points in the query
+      // @ts-expect-error [ts2322] - We build output incrementally so typescript can't ensure that it matches the expected output.
       return output;
     }
   }

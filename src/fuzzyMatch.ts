@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
 import { findWordPrefixes } from "./findWordPrefixes";
-import { indicesOf } from "./utils/indicesOf";
 import { matchScore } from "./score";
+import { indicesOf } from "./utils/indicesOf";
+import { type NonEmptyArray } from "./utils/isNonEmpty";
 import { nextWordBreakIndices } from "./wordBreaks";
 
 export interface FuzzyMatch {
@@ -11,7 +12,7 @@ export interface FuzzyMatch {
 }
 
 export function fuzzyMatch(
-  query: readonly string[],
+  query: NonEmptyArray<string>,
   textRaw: string
 ): FuzzyMatch | undefined {
   const text = [...textRaw.toLowerCase()];

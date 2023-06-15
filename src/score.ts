@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable security/detect-object-injection */
 
+import { type NonEmptyArray } from "./utils/isNonEmpty";
+
 const PENALTY_MATCH_GROUPS = 12;
 const PENALTY_FIRST_MATCHING_OFFSET = 0.2;
 
@@ -12,7 +14,7 @@ const LONG_PHRASES_PENALTY = 10;
 export function matchScore(
   query: readonly string[],
   searchable: readonly string[],
-  match: readonly number[],
+  match: NonEmptyArray<number>,
   isStrict: boolean,
   nextWordBreak: readonly number[]
 ): number {
@@ -92,10 +94,10 @@ function phrasesPenalty(nextWordBreak: readonly number[]): number {
 function substringBonus(
   query: readonly string[],
   searchable: readonly string[],
-  match: readonly number[],
+  match: NonEmptyArray<number>,
   nextWordBreak: readonly number[]
 ): number {
-  const firstMatchingIndex = match[0]!;
+  const firstMatchingIndex = match[0];
   if (
     query.some(
       (character, index) =>

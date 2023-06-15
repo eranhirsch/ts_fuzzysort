@@ -1,6 +1,7 @@
 import { digest } from "./digest";
-import { FuzzyMatch, fuzzyMatch } from "./fuzzyMatch";
+import { fuzzyMatch, type FuzzyMatch } from "./fuzzyMatch";
 import { fuzzyMatchWords } from "./fuzzyMatchWords";
+import { isNonEmpty, type NonEmptyArray } from "./utils/isNonEmpty";
 import { splitArray } from "./utils/splitArray";
 
 interface Result<T> {
@@ -16,6 +17,14 @@ export function find<T>(
   extractor: (entity: T) => string
 ): readonly T[] {
   const query = [...rawQuery.trim().toLowerCase()];
+
+  if (!isNonEmpty(query)) {
+    // TODO [2024-01-01]: Technically find is a filter that returns *less*
+    // results the more characters the query has, so when the query is empty it
+    // should return everything, not nothing...
+    return [];
+  }
+
   const words = splitArray(query, WORDS_SEPARATOR);
   const queryDigest = digest(rawQuery);
 
@@ -28,7 +37,7 @@ export function find<T>(
   const matchFunction =
     words.length === 1
       ? fuzzyMatch
-      : (query: readonly string[], text: string) =>
+      : (query: NonEmptyArray<string>, text: string) =>
           fuzzyMatchWords(words, query, text);
 
   for (const entity of entities) {
