@@ -41,6 +41,15 @@ describe("legacy", () => {
 
     expect(score1).greaterThan(score2);
   });
+
+  test("exact match", () => {
+    const input = "this is exactly the same search and target";
+
+    const query = asCharactersArray(input);
+    const parametersA = validatedParametersForMatchScore(query, input);
+
+    expect(matchScore(...parametersA)).toBe(0);
+  });
 });
 
 /**
