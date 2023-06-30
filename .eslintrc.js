@@ -2,6 +2,8 @@
 
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
+  root: true,
+
   env: {
     browser: true,
     commonjs: true,
@@ -14,6 +16,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     ecmaVersion: "latest",
   },
+
   plugins: ["@typescript-eslint", "import", "security", "unicorn"],
   extends: [
     "eslint:recommended",
@@ -26,16 +29,22 @@ module.exports = {
     "plugin:unicorn/recommended",
     "prettier",
   ],
+
   settings: {
     propWrapperFunctions: [{ property: "freeze", object: "Object" }],
     // Copied from 'eslint-import-resolver-typescript' README:
     "import/parsers": { "@typescript-eslint/parser": [".ts", ".tsx"] },
     "import/resolver": { typescript: { alwaysTryTypes: true }, node: true },
   },
+
+  ignorePatterns: ["src/__legacy"],
+
   reportUnusedDisableDirectives: true,
+
   rules: {
     "unicorn/filename-case": "off",
   },
+
   overrides: [
     {
       files: ["*.config.js"],
