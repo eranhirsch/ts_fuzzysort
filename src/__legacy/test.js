@@ -79,12 +79,14 @@ setTimeout(async function () {
 
 async function tests() {
   {
+    //! @eranhirsch - Done in find > legacy > zom in URLS_AND_TITLES
     // urls with garbage ids in them match everything too well
     var tmp = fuzzysort.go("zom", testdata_prepared.urls_and_titles);
     assert(tmp[0].target == "jQuery Zoom", "zom", tmp[0].target);
   }
 
   {
+    //! @eranhirsch - findWordPrefixes > legacy > multiple backoff is fast
     // Exponential backtracking https://github.com/farzher/fuzzysort/issues/80
     var startms = Date.now();
 
@@ -99,9 +101,12 @@ async function tests() {
 
   {
     // sorting
+    //! @eranhirsch - find > legacy > Non-matches are filtered out
     testSorting1("adio", "Audio.h", "AsyncTaskDownloadImage.h");
+    //! @eranhirsch - score > legacy > scoring
     testSorting1("note", "node/noTe", "not one that evening");
 
+    //! @eranhirsch - score > legacy > substring not at start of word
     // https://github.com/home-assistant/frontend/discussions/12590#discussioncomment-2694018
     testSorting1(
       "er.life360",
@@ -111,6 +116,7 @@ async function tests() {
   }
 
   {
+    //! @eranhirsch - score > legacy > exact match
     // spaces destroy the score even when it's an exact substring https://github.com/farzher/fuzzysort/issues/99
     assert(
       fuzzysort.single(
@@ -118,6 +124,7 @@ async function tests() {
         "this is exactly the same search and target",
       ).score == 0,
     );
+    //! @eranhirsch - find > legacy > substring score order
     test(
       "The Amazing Spider-Man",
       "The Amazing Spider-Man",
@@ -184,6 +191,7 @@ async function tests() {
   }
 
   {
+    //! @eranhirsch - find > legacy > cman in UE4_FILES
     // random junks tests, idk
     var tmp = fuzzysort
       .go("cman", testdata_prepared.ue4_files)
