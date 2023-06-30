@@ -17,7 +17,7 @@ export function matchScore(
   searchable: readonly string[],
   match: NonEmptyArray<number>,
   isStrict: boolean,
-  nextWordBreak: readonly number[]
+  nextWordBreak: readonly number[],
 ): number {
   let score = 0;
 
@@ -38,7 +38,7 @@ export function matchScore(
 // penalty for more groups
 function multiGroupPenalty(
   match: NonEmptyArray<number>,
-  queryLength: number
+  queryLength: number,
 ): number {
   let groupPositionPenalty = 0;
 
@@ -87,7 +87,7 @@ function substringBonus(
   query: readonly string[],
   searchable: readonly string[],
   [firstMatchingIndex]: NonEmptyArray<number>,
-  nextWordBreak: readonly number[]
+  nextWordBreak: readonly number[],
 ): number {
   if (!includesSequence(searchable, query, firstMatchingIndex)) {
     return 1;

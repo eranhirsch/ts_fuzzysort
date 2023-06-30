@@ -3,7 +3,7 @@
 export function includesSequence<T>(
   data: readonly T[],
   sequence: readonly T[],
-  startIndex = 0
+  startIndex = 0,
 ): boolean {
   let sequenceIndex = 0;
 

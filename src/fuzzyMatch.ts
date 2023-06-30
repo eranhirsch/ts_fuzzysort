@@ -13,7 +13,7 @@ export interface FuzzyMatch {
 
 export function fuzzyMatch(
   query: NonEmptyArray<string>,
-  textRaw: string
+  textRaw: string,
 ): FuzzyMatch | undefined {
   const text = [...textRaw.toLowerCase()];
   const matchSequence = indicesOf(query, text);
@@ -27,7 +27,7 @@ export function fuzzyMatch(
     query,
     text,
     nextWordBreak,
-    matchSequence[0]!
+    matchSequence[0]!,
   );
 
   const indices = wordPrefixesMatchSequence ?? matchSequence;
@@ -37,7 +37,7 @@ export function fuzzyMatch(
     text,
     indices,
     wordPrefixesMatchSequence !== undefined,
-    nextWordBreak
+    nextWordBreak,
   );
 
   return { score, indices };

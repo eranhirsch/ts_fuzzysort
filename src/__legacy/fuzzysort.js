@@ -445,7 +445,7 @@
     // check if it's a substring match
     var substringIndex = prepared._targetLower.indexOf(
       searchLower,
-      matchesSimple[0]
+      matchesSimple[0],
     ); // perf: this is slow
     var isSubstring = ~substringIndex;
     if (isSubstring && !successStrict) {
@@ -543,7 +543,7 @@
     var allowSpacesResult = algorithm(
       preparedSearch,
       target,
-      /*allowSpaces=*/ true
+      /*allowSpaces=*/ true,
     );
     if (allowSpacesResult !== NULL && allowSpacesResult.score > score) {
       return allowSpacesResult;

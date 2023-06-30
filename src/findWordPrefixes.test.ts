@@ -12,23 +12,23 @@ describe("legacy", () => {
       expect(
         simplifiedFindWordPrefixes(
           "aaaaaaaaaaab",
-          "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a xb"
-        )
+          "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a xb",
+        ),
       ).toEqual(undefined);
     },
-    { timeout: 16 }
+    { timeout: 16 },
   );
 });
 
 test("first match is at last word and no prefix matches", () => {
   expect(
-    simplifiedFindWordPrefixes("zom", "http://www.jacklmoore.com/zoom")
+    simplifiedFindWordPrefixes("zom", "http://www.jacklmoore.com/zoom"),
   ).toEqual(undefined);
 });
 
 function simplifiedFindWordPrefixes(
   query: string,
-  searchable: string
+  searchable: string,
 ): readonly number[] | undefined {
   const queryCodePoints = asCharactersArray(query);
   const searchableCodePoints = asCharactersArray(searchable);
@@ -39,6 +39,6 @@ function simplifiedFindWordPrefixes(
     // These are computed in the main function and passed in for perf, but for
     // testing we need to compute them on the fly.
     [...nextWordBreakIndices(searchable)],
-    searchableCodePoints.indexOf(queryCodePoints[0]!)
+    searchableCodePoints.indexOf(queryCodePoints[0]!),
   );
 }

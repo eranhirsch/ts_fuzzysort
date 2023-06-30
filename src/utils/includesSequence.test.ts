@@ -25,10 +25,10 @@ describe("sanity", () => {
 const stringsIncludeSequence = (
   data: string,
   sequence: string,
-  startIndex = 0
+  startIndex = 0,
 ): boolean =>
   includesSequence(
     asCharactersArray(data),
     asCharactersArray(sequence),
-    startIndex
+    startIndex,
   );

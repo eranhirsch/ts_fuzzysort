@@ -15,7 +15,7 @@ describe("legacy", () => {
     const parametersA = validatedParametersForMatchScore(query, "node/NoTe");
     const parametersB = validatedParametersForMatchScore(
       query,
-      "not one that evening"
+      "not one that evening",
     );
 
     const score1 = matchScore(...parametersA);
@@ -29,11 +29,11 @@ describe("legacy", () => {
 
     const parametersA = validatedParametersForMatchScore(
       query,
-      "device-tracker.life360_iphone_6"
+      "device-tracker.life360_iphone_6",
     );
     const parametersB = validatedParametersForMatchScore(
       query,
-      "sendor.battery_life360_iphone_6"
+      "sendor.battery_life360_iphone_6",
     );
 
     const score1 = matchScore(...parametersA);
@@ -63,7 +63,7 @@ describe("legacy", () => {
  */
 function validatedParametersForMatchScore(
   query: NonEmptyArray<string>,
-  text: string
+  text: string,
 ) {
   const parameters = fakeFuzzyMatchResults(query, text);
   expect(parameters).toMatchSnapshot();
@@ -94,7 +94,7 @@ function fakeFuzzyMatchResults(query: NonEmptyArray<string>, textRaw: string) {
     query,
     text,
     nextWordBreak,
-    matchSequence[0]!
+    matchSequence[0]!,
   );
 
   const indices = wordPrefixesMatchSequence ?? matchSequence;

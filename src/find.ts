@@ -14,7 +14,7 @@ const WORDS_SEPARATOR = " ";
 export function find<T>(
   rawQuery: string,
   entities: Iterable<T>,
-  extractor: (entity: T) => string
+  extractor: (entity: T) => string,
 ): readonly T[] {
   const query = [...rawQuery.trim().toLowerCase()];
 

@@ -6,7 +6,7 @@ import { type NonEmptyArray } from "./utils/isNonEmpty";
 export function fuzzyMatchWords(
   words: readonly NonEmptyArray<string>[],
   query: NonEmptyArray<string>,
-  text: string
+  text: string,
 ): FuzzyMatch | undefined {
   const seenIndices = new Set<number>();
   let score = 0;

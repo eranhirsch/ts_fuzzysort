@@ -90,7 +90,7 @@ async function tests() {
 
     var tmp = fuzzysort.single(
       "aaaaaaaaaaab",
-      "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a xb"
+      "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a xb",
     );
 
     var diff = Date.now() - startms;
@@ -106,7 +106,7 @@ async function tests() {
     testSorting1(
       "er.life360",
       "device-tracker.life360_iphone_6",
-      "sendor.battery_life360_iphone_6"
+      "sendor.battery_life360_iphone_6",
     );
   }
 
@@ -115,15 +115,15 @@ async function tests() {
     assert(
       fuzzysort.single(
         "this is exactly the same search and target",
-        "this is exactly the same search and target"
-      ).score == 0
+        "this is exactly the same search and target",
+      ).score == 0,
     );
     test(
       "The Amazing Spider-Man",
       "The Amazing Spider-Man",
       "The Amazing Spider",
       "The Amazing",
-      "The"
+      "The",
     );
   }
 
@@ -178,7 +178,7 @@ async function tests() {
         { a: "pants", b: "noodles" },
         { a: "suit", b: "tie" },
       ],
-      { keys: ["a", "b"] }
+      { keys: ["a", "b"] },
     );
     assert(tmp[1][1].target === "tie", "all 5");
   }
@@ -192,7 +192,7 @@ async function tests() {
     assert(
       tmp.includes("CheatManager.h") && tmp.includes("CrowdManager.h"),
       "cman",
-      tmp[0]
+      tmp[0],
     );
 
     var tmp = fuzzysort.go("a", ["ba", "bA", "a", "bA", "xx", "ba"]);
@@ -215,7 +215,7 @@ async function tests() {
       "po ru",
       "pr",
       "prrun",
-      "ocket umble"
+      "ocket umble",
     );
     test("123abc", "12", "1", "a", null, "cc");
     test("Thoug ht", "ht", "hh");
@@ -262,12 +262,12 @@ async function tests() {
     var results = fuzzysort.go("typography", targets, { key: "name" });
     assert(
       results[0].obj.version != results[1].obj.version,
-      "key same object bug"
+      "key same object bug",
     );
     var results = fuzzysort.go("typography", targets, { keys: ["name"] });
     assert(
       results[0].obj.version != results[1].obj.version,
-      "keys same object bug"
+      "keys same object bug",
     );
 
     // missing key
@@ -280,13 +280,13 @@ async function tests() {
     var results = fuzzysort.go(
       "va",
       ["value", ""].map((v) => ({ target: v, [s]: fuzzysort.prepare(v) })),
-      { key: s }
+      { key: s },
     );
     assert(results.length == 1);
     var results = fuzzysort.go(
       "va",
       ["value", ""].map((v) => ({ target: v, [s]: fuzzysort.prepare(v) })),
-      { keys: [s] }
+      { keys: [s] },
     );
     assert(results.length == 1);
 
@@ -416,7 +416,7 @@ async function benchmarks() {
         fuzzysort.highlight(result);
       }
     },
-    config
+    config,
   );
 
   bench(
@@ -424,30 +424,30 @@ async function benchmarks() {
     function () {
       fuzzysort.single(
         "prrun",
-        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat"
+        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat",
       );
     },
-    config
+    config,
   );
   bench(
     "tricky space",
     function () {
       fuzzysort.single(
         "pr run",
-        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat"
+        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat",
       );
     },
-    config
+    config,
   );
   bench(
     "tricky lot of space",
     function () {
       fuzzysort.single(
         "pr run      e     e e e        e      e e ee         e     e",
-        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat"
+        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat",
       );
     },
-    config
+    config,
   );
 
   bench(
@@ -457,7 +457,7 @@ async function benchmarks() {
       fuzzysort.go(" e ", testdata_prepared.ue4_files);
       fuzzysort.go("m render .h", testdata_prepared.ue4_files);
     },
-    config
+    config,
   );
   bench(
     "go key spaces",
@@ -466,7 +466,7 @@ async function benchmarks() {
       fuzzysort.go(" e ", testdata_obj.ue4_files, { key: "str" });
       fuzzysort.go("m render .h", testdata_obj.ue4_files, { key: "str" });
     },
-    config
+    config,
   );
 
   bench(
@@ -476,7 +476,7 @@ async function benchmarks() {
       fuzzysort.go("e", testdata_prepared.ue4_files);
       fuzzysort.go("mrender.h", testdata_prepared.ue4_files);
     },
-    config
+    config,
   );
   bench(
     "go prepared key",
@@ -485,7 +485,7 @@ async function benchmarks() {
       fuzzysort.go("e", testdata_obj.ue4_files, { key: "prepared" });
       fuzzysort.go("mrender.h", testdata_obj.ue4_files, { key: "prepared" });
     },
-    config
+    config,
   );
   bench(
     "go key",
@@ -494,7 +494,7 @@ async function benchmarks() {
       fuzzysort.go("e", testdata_obj.ue4_files, { key: "str" });
       fuzzysort.go("mrender.h", testdata_obj.ue4_files, { key: "str" });
     },
-    config
+    config,
   );
   bench(
     "go keys",
@@ -503,7 +503,7 @@ async function benchmarks() {
       fuzzysort.go("e", testdata_obj.ue4_files, { keys: ["str"] });
       fuzzysort.go("mrender.h", testdata_obj.ue4_files, { keys: ["str"] });
     },
-    config
+    config,
   );
   bench(
     "go str",
@@ -512,7 +512,7 @@ async function benchmarks() {
       fuzzysort.go("e", testdata.ue4_files);
       fuzzysort.go("mrender.h", testdata.ue4_files);
     },
-    config
+    config,
   );
 
   bench(
@@ -520,34 +520,34 @@ async function benchmarks() {
     function () {
       fuzzysort.single(
         "xxx",
-        "noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster"
+        "noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster noodle monster",
       );
     },
-    config
+    config,
   );
   bench(
     "tricky",
     function () {
       fuzzysort.single(
         "prrun",
-        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat"
+        "C:/users/farzher/dropbox/someotherfolder/pocket rumble refactor/Run.bat",
       );
     },
-    config
+    config,
   );
   bench(
     "small",
     function () {
       fuzzysort.single("al", "alexstrasa");
     },
-    config
+    config,
   );
   bench(
     "somematch",
     function () {
       fuzzysort.single("texxx", "template/index");
     },
-    config
+    config,
   );
 }
 
@@ -604,7 +604,7 @@ async function bench(name, code, { benchtime = 2000 } = {}) {
     "ops/sec",
     `${speeddiffstr ? speeddiffstr + " " : ""}|`,
     loopmsarr.length.toString(),
-    "runs sampled"
+    "runs sampled",
   );
 
   function cmdyellow(x) {

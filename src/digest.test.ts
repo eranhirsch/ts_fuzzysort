@@ -45,7 +45,7 @@ describe("encoding uniqueness", () => {
 
   test("all ascii symbols have the same code", () => {
     expect(uniqueEncodedValuesCount("`~!@#$%^&*()_+-=[]{}\\|;:'\",<.>/?")).toBe(
-      1
+      1,
     );
   });
 
@@ -82,10 +82,10 @@ describe("encoding uniqueness", () => {
     (character) => {
       expect(
         uniqueEncodedValuesCount(
-          `${character.toLowerCase()}${character.toUpperCase()}`
-        )
+          `${character.toLowerCase()}${character.toUpperCase()}`,
+        ),
       ).toBe(1);
-    }
+    },
   );
 });
 

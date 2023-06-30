@@ -19,7 +19,7 @@ describe("legacy", () => {
     const result = find(
       "adio",
       ["Audio.h", "AsyncTaskDownloadImage.h"],
-      identity
+      identity,
     );
     expect(result).length(1);
     expect(result).not.contain("AsyncTaskDownloadImage.h");

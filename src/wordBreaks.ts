@@ -14,7 +14,7 @@ export function nextWordBreakIndices(input: string): readonly number[] {
 }
 
 export function* findWordBreakIndices(
-  characters: readonly string[]
+  characters: readonly string[],
 ): Generator<number, undefined> {
   let previousWasUpperCase = false;
   let previousAlphaNumeric = false;

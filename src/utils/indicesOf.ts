@@ -10,7 +10,7 @@
  */
 export function indicesOf<Needles extends readonly unknown[] | []>(
   needles: Needles,
-  haystack: readonly Needles[number][]
+  haystack: readonly Needles[number][],
 ): { readonly [P in keyof Needles]: number } | undefined {
   const output: number[] = [];
 

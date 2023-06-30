@@ -26,7 +26,7 @@ export function findWordPrefixes(
   queryCharacters: NonEmptyArray<string>,
   textCharacters: readonly string[],
   nextWordBreak: readonly number[],
-  firstMatchingIndex: number
+  firstMatchingIndex: number,
 ): NonEmptyArray<number> | undefined {
   let index =
     firstMatchingIndex === 0 ? 0 : nextWordBreak[firstMatchingIndex - 1];

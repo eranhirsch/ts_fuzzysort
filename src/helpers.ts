@@ -6,14 +6,14 @@ import { find } from "./find";
 
 export const findInString = (
   query: Parameters<typeof find>[0],
-  entities: Iterable<string>
+  entities: Iterable<string>,
 ) => find(query, entities, (text) => text);
 
 export const findInProperty = <
   K extends PropertyKey,
-  T extends Record<K, string>
+  T extends Record<K, string>,
 >(
   query: Parameters<typeof find>[0],
   entities: Iterable<T>,
-  property: K
+  property: K,
 ) => find(query, entities, ({ [property]: text }) => text);

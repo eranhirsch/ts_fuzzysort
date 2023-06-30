@@ -35,7 +35,7 @@ export function splitArray<T>(data: readonly T[], separator: T): Split<T> {
 function nonEmptySlice<T>(
   data: readonly T[],
   from: number,
-  to?: number
+  to?: number,
 ): NonEmptyArray<T> {
   const part = data.slice(from, to);
   if (isNonEmpty(part)) {
@@ -45,6 +45,6 @@ function nonEmptySlice<T>(
   throw new Error(
     `Failed to get non-empty slice from ${from} ${
       to === undefined ? "" : `to ${to} `
-    }in ${JSON.stringify(data)}`
+    }in ${JSON.stringify(data)}`,
   );
 }

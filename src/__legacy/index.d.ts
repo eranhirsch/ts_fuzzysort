@@ -72,27 +72,27 @@ declare namespace Fuzzysort {
     go(
       search: string,
       targets: ReadonlyArray<string | Prepared | undefined>,
-      options?: Options
+      options?: Options,
     ): Results;
     go<T>(
       search: string,
       targets: ReadonlyArray<T | undefined>,
-      options: KeyOptions
+      options: KeyOptions,
     ): KeyResults<T>;
     go<T>(
       search: string,
       targets: ReadonlyArray<T | undefined>,
-      options: KeysOptions<T>
+      options: KeysOptions<T>,
     ): KeysResults<T>;
 
     highlight(
       result?: Result,
       highlightOpen?: string,
-      highlightClose?: string
+      highlightClose?: string,
     ): string | null;
     highlight<T>(
       result: Result,
-      callback: HighlightCallback<T>
+      callback: HighlightCallback<T>,
     ): (string | T)[] | null;
 
     indexes(result: Result): ReadonlyArray<Number>;
