@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prefer-module */
-
 module.exports = {
   // Code
   "*.+(js|ts|jsx|tsx|mjs|cjs)": [

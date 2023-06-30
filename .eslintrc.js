@@ -36,5 +36,12 @@ module.exports = {
   rules: {
     "unicorn/filename-case": "off",
   },
-  overrides: [],
+  overrides: [
+    {
+      files: ["*.config.js"],
+      rules: {
+        "unicorn/prefer-module": "off",
+      },
+    },
+  ],
 };
