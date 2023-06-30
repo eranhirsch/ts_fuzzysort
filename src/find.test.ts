@@ -24,15 +24,4 @@ describe("legacy", () => {
     expect(result).length(1);
     expect(result).not.contain("AsyncTaskDownloadImage.h");
   });
-
-  test("substring score order", () => {
-    const sortedMatches = [
-      "The Amazing Spider-Man",
-      "The Amazing Spider",
-      "The Amazing",
-      "The",
-    ];
-    const result = find("The Amazing Spider-Man", sortedMatches, identity);
-    expect(result).toEqual(sortedMatches);
-  });
 });

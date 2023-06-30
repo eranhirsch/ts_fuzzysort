@@ -50,6 +50,35 @@ describe("legacy", () => {
 
     expect(matchScore(...parametersA)).toBe(0);
   });
+
+  test("Partial queries yield lower scores", () => {
+    const input = "The Amazing Spider-Man";
+
+    const exactMatchScore = matchScore(
+      ...validatedParametersForMatchScore(asCharactersArray(input), input),
+    );
+
+    const theAmazingSpiderScore = matchScore(
+      ...validatedParametersForMatchScore(
+        asCharactersArray("The Amazing Spider"),
+        input,
+      ),
+    );
+    expect(exactMatchScore).toBeGreaterThan(theAmazingSpiderScore);
+
+    const theAmazingScore = matchScore(
+      ...validatedParametersForMatchScore(
+        asCharactersArray("The Amazing"),
+        input,
+      ),
+    );
+    expect(theAmazingSpiderScore).toBeGreaterThan(theAmazingScore);
+
+    const theScore = matchScore(
+      ...validatedParametersForMatchScore(asCharactersArray("The"), input),
+    );
+    expect(theAmazingScore).toBeGreaterThan(theScore);
+  });
 });
 
 /**

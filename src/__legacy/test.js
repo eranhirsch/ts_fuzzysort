@@ -124,7 +124,7 @@ async function tests() {
         "this is exactly the same search and target",
       ).score == 0,
     );
-    //! @eranhirsch - find > legacy > substring score order
+    //! @eranhirsch - score > legacy > Partial queries yield lower scores
     test(
       "The Amazing Spider-Man",
       "The Amazing Spider-Man",
