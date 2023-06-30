@@ -14,7 +14,7 @@ describe("legacy", () => {
           "aaaaaaaaaaab",
           "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a xb",
         ),
-      ).toEqual(undefined);
+      ).toBeUndefined();
     },
     { timeout: 16 },
   );
