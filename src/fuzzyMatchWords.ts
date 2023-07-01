@@ -14,7 +14,7 @@ export function fuzzyMatchWords(
   const seenIndices = new Set<number>();
   let score = 0;
 
-  let firstSeenIndexLastSearch = 0;
+  let firstSeenIndexLastSearch = Number.NEGATIVE_INFINITY;
   for (const word of words) {
     const result = fuzzyMatch(word, text);
     if (result === undefined) {
