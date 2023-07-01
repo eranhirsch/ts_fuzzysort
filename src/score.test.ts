@@ -9,77 +9,47 @@ import { type NonEmptyArray } from "./utils/isNonEmpty";
 import { nextWordBreakIndices } from "./wordBreaks";
 
 describe("legacy", () => {
+  test("exact match", () => {
+    const input = "this is exactly the same search and target";
+    expect(simpleMatchScore(input, input)).toBe(0);
+  });
+
   test("scoring", () => {
-    const query = asCharactersArray("note");
+    const query = "note";
 
-    const parametersA = validatedParametersForMatchScore(query, "node/NoTe");
-    const parametersB = validatedParametersForMatchScore(
-      query,
-      "not one that evening",
-    );
-
-    const score1 = matchScore(...parametersA);
-    const score2 = matchScore(...parametersB);
+    const score1 = simpleMatchScore(query, "node/NoTe");
+    const score2 = simpleMatchScore(query, "not one that evening");
 
     expect(score1).greaterThan(score2);
   });
 
   test("substring not at start of word", () => {
-    const query = asCharactersArray("er.life360");
+    const query = "er.life360";
 
-    const parametersA = validatedParametersForMatchScore(
-      query,
-      "device-tracker.life360_iphone_6",
-    );
-    const parametersB = validatedParametersForMatchScore(
-      query,
-      "sendor.battery_life360_iphone_6",
-    );
-
-    const score1 = matchScore(...parametersA);
-    const score2 = matchScore(...parametersB);
+    const score1 = simpleMatchScore(query, "device-tracker.life360_iphone_6");
+    const score2 = simpleMatchScore(query, "sendor.battery_life360_iphone_6");
 
     expect(score1).greaterThan(score2);
-  });
-
-  test("exact match", () => {
-    const input = "this is exactly the same search and target";
-
-    const query = asCharactersArray(input);
-    const parametersA = validatedParametersForMatchScore(query, input);
-
-    expect(matchScore(...parametersA)).toBe(0);
   });
 
   test("Partial queries yield lower scores", () => {
     const input = "The Amazing Spider-Man";
 
-    const exactMatchScore = matchScore(
-      ...validatedParametersForMatchScore(asCharactersArray(input), input),
-    );
+    const theAmazingSpiderScore = simpleMatchScore("The Amazing Spider", input);
+    expect(theAmazingSpiderScore).toBeLessThan(0 /* score for exact match */);
 
-    const theAmazingSpiderScore = matchScore(
-      ...validatedParametersForMatchScore(
-        asCharactersArray("The Amazing Spider"),
-        input,
-      ),
-    );
-    expect(exactMatchScore).toBeGreaterThan(theAmazingSpiderScore);
-
-    const theAmazingScore = matchScore(
-      ...validatedParametersForMatchScore(
-        asCharactersArray("The Amazing"),
-        input,
-      ),
-    );
+    const theAmazingScore = simpleMatchScore("The Amazing", input);
     expect(theAmazingSpiderScore).toBeGreaterThan(theAmazingScore);
 
-    const theScore = matchScore(
-      ...validatedParametersForMatchScore(asCharactersArray("The"), input),
-    );
+    const theScore = simpleMatchScore("The", input);
     expect(theAmazingScore).toBeGreaterThan(theScore);
   });
 });
+
+const simpleMatchScore = (query: string, target: string) =>
+  matchScore(
+    ...validatedParametersForMatchScore(asCharactersArray(query), target),
+  );
 
 /**
  * It's really hard to test the score method because it relies on so many of the
