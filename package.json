@@ -21,11 +21,11 @@
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.1",
     "@types/eslint": "^8.40.2",
-    "@types/node": "^20.3.2",
+    "@types/node": "^20.3.3",
     "@types/prettier": "^2.7.3",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
-    "eslint": "^8.43.0",
+    "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.5",
     "eslint-plugin-import": "^2.27.5",
@@ -35,7 +35,7 @@
     "lint-staged": "^13.2.3",
     "npm-check-updates": "^16.10.13",
     "prettier": "^2.8.8",
-    "typescript": "^5.1.5",
+    "typescript": "^5.1.6",
     "vitest": "^0.32.2"
   }
 }
