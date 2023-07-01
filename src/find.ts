@@ -1,31 +1,32 @@
 import { digest } from "./digest";
 import { fuzzyMatch, type FuzzyMatch } from "./fuzzyMatch";
 import { fuzzyMatchWords } from "./fuzzyMatchWords";
-import { isNonEmpty, type NonEmptyArray } from "./utils/isNonEmpty";
-import { splitArray } from "./utils/splitArray";
+import { queryWords } from "./queryWords";
+import { isNonEmpty } from "./utils/isNonEmpty";
 
 interface Result<T> {
   readonly entity: T;
   readonly match: FuzzyMatch;
 }
 
-const WORDS_SEPARATOR = " ";
-
 export function find<T>(
   rawQuery: string,
   entities: Iterable<T>,
   extractor: (entity: T) => string,
 ): readonly T[] {
-  const query = [...rawQuery.trim().toLowerCase()];
+  const lowercase = rawQuery.trim().toLowerCase();
+  const characters = [...lowercase];
 
-  if (!isNonEmpty(query)) {
+  if (!isNonEmpty(characters)) {
     // TODO [2024-01-01]: Technically find is a filter that returns *less*
     // results the more characters the query has, so when the query is empty it
     // should return everything, not nothing...
     return [];
   }
 
-  const words = splitArray(query, WORDS_SEPARATOR);
+  const query = { characters, lowercase };
+
+  const words = queryWords(lowercase);
   const queryDigest = digest(rawQuery);
 
   const results: Result<T>[] = [];
@@ -34,11 +35,10 @@ export function find<T>(
   // the constant words array on every iteration, but it might actually be more
   // expensive because of the extra arrow function required, so we need to
   // benchmark this and pick the better option.
-  const matchFunction =
+  const matchFunction: typeof fuzzyMatch =
     words.length === 1
       ? fuzzyMatch
-      : (query: NonEmptyArray<string>, text: string) =>
-          fuzzyMatchWords(words, query, text);
+      : (query, text) => fuzzyMatchWords(words, query, text);
 
   for (const entity of entities) {
     const text = extractor(entity);

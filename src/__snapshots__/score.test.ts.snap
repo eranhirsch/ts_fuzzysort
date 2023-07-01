@@ -135,6 +135,7 @@ exports[`legacy > exact match 1`] = `
     41,
   ],
   true,
+  true,
   [
     4,
     4,
@@ -249,11 +250,12 @@ exports[`legacy > scoring 1`] = `
     "e",
   ],
   [
-    0,
-    1,
+    5,
+    6,
     7,
     8,
   ],
+  true,
   true,
   [
     4,
@@ -271,8 +273,8 @@ exports[`legacy > scoring 1`] = `
 
 exports[`legacy > scoring 2`] = `
 [
-  0,
-  1,
+  5,
+  6,
   7,
   8,
 ]
@@ -315,6 +317,7 @@ exports[`legacy > scoring 3`] = `
     13,
   ],
   true,
+  false,
   [
     3,
     3,
@@ -397,8 +400,8 @@ exports[`legacy > substring not at start of word 1`] = `
     "6",
   ],
   [
-    1,
-    8,
+    12,
+    13,
     14,
     15,
     16,
@@ -409,6 +412,7 @@ exports[`legacy > substring not at start of word 1`] = `
     21,
   ],
   false,
+  true,
   [
     6,
     6,
@@ -447,8 +451,8 @@ exports[`legacy > substring not at start of word 1`] = `
 
 exports[`legacy > substring not at start of word 2`] = `
 [
-  1,
-  8,
+  12,
+  13,
   14,
   15,
   16,
@@ -519,6 +523,7 @@ exports[`legacy > substring not at start of word 3`] = `
     20,
     21,
   ],
+  false,
   false,
   [
     6,

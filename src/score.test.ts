@@ -2,7 +2,7 @@
 
 import { asCharactersArray } from "../test/asCharactersArray";
 import { findWordPrefixes } from "./findWordPrefixes";
-import { fuzzyMatch } from "./fuzzyMatch";
+import { fuzzyMatch, type FuzzyMatchQuery } from "./fuzzyMatch";
 import { matchScore } from "./score";
 import { indicesOf } from "./utils/indicesOf";
 import { type NonEmptyArray } from "./utils/isNonEmpty";
@@ -34,9 +34,7 @@ describe("legacy", () => {
 });
 
 const simpleMatchScore = (query: string, target: string) =>
-  matchScore(
-    ...validatedParametersForMatchScore(asCharactersArray(query), target),
-  );
+  matchScore(...validatedParametersForMatchScore(query, target));
 
 /**
  * It's really hard to test the score method because it relies on so many of the
@@ -47,10 +45,8 @@ const simpleMatchScore = (query: string, target: string) =>
  * actual fuzzyMatch logic so that we can assert that the 2 implementations
  * haven't diverged.
  */
-function validatedParametersForMatchScore(
-  query: NonEmptyArray<string>,
-  text: string,
-) {
+function validatedParametersForMatchScore(lowercase: string, text: string) {
+  const query = { lowercase, characters: asCharactersArray(lowercase) };
   const parameters = fakeFuzzyMatchResults(query, text);
   expect(parameters).toMatchSnapshot();
   const { indices } = fuzzyMatch(query, text) ?? {};
@@ -67,9 +63,21 @@ function validatedParametersForMatchScore(
  * sent to matchScore so that we can call the function ourselves as part of our
  * tests.
  */
-function fakeFuzzyMatchResults(query: NonEmptyArray<string>, textRaw: string) {
-  const text = [...textRaw.toLowerCase()];
-  const matchSequence = indicesOf(query, text);
+function fakeFuzzyMatchResults(query: FuzzyMatchQuery, textRaw: string) {
+  const textLowercase = textRaw.toLowerCase();
+  const text = [...textLowercase];
+
+  const substringIndex = textLowercase.indexOf(query.lowercase);
+  const substringSequence =
+    substringIndex === -1
+      ? undefined
+      : // @ts-expect-error [ts2352]
+        (Array.from({ length: query.lowercase.length }).map(
+          (_, index) => index + substringIndex,
+        ) as NonEmptyArray<number>);
+
+  const matchSequence = substringSequence ?? indicesOf(query.characters, text);
+
   if (matchSequence === undefined) {
     return;
   }
@@ -77,7 +85,7 @@ function fakeFuzzyMatchResults(query: NonEmptyArray<string>, textRaw: string) {
   const nextWordBreak = nextWordBreakIndices(textRaw);
 
   const wordPrefixesMatchSequence = findWordPrefixes(
-    query,
+    query.characters,
     text,
     nextWordBreak,
     matchSequence[0]!,
@@ -86,10 +94,11 @@ function fakeFuzzyMatchResults(query: NonEmptyArray<string>, textRaw: string) {
   const indices = wordPrefixesMatchSequence ?? matchSequence;
 
   return [
-    query,
+    query.characters,
     text,
     indices,
     wordPrefixesMatchSequence !== undefined,
+    substringSequence !== undefined,
     nextWordBreak,
   ] as const;
 }

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable security/detect-object-injection */
 
-import { includesSequence } from "./utils/includesSequence";
 import { type NonEmptyArray } from "./utils/isNonEmpty";
 
 const PENALTY_MATCH_GROUPS = 12;
@@ -16,7 +15,8 @@ export function matchScore(
   query: readonly string[],
   searchable: readonly string[],
   match: NonEmptyArray<number>,
-  isStrict: boolean,
+  isWordStarts: boolean,
+  isQuerySubstring: boolean,
   nextWordBreak: readonly number[],
 ): number {
   let score = 0;
@@ -25,9 +25,11 @@ export function matchScore(
 
   score -= offsetPenalty(match);
 
-  score *= isStrict ? phrasesPenalty(nextWordBreak) : PENALTY_NON_STRICT_MATCH;
+  score *= isWordStarts
+    ? phrasesPenalty(nextWordBreak)
+    : PENALTY_NON_STRICT_MATCH;
 
-  score /= substringBonus(query, searchable, match, nextWordBreak);
+  score /= isQuerySubstring ? substringBonus(query, match, nextWordBreak) : 1;
 
   // penalty for longer targets
   score -= searchable.length - query.length;
@@ -85,14 +87,9 @@ function phrasesPenalty(nextWordBreak: readonly number[]): number {
 
 function substringBonus(
   query: readonly string[],
-  searchable: readonly string[],
   [firstMatchingIndex]: NonEmptyArray<number>,
   nextWordBreak: readonly number[],
 ): number {
-  if (!includesSequence(searchable, query, firstMatchingIndex)) {
-    return 1;
-  }
-
   // bonus for being a full substring
   const bonus = 1 + query.length * query.length * 1;
 

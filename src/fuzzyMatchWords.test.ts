@@ -1,5 +1,6 @@
 import { asCharactersArray } from "../test/asCharactersArray";
 import { fuzzyMatchWords } from "./fuzzyMatchWords";
+import { queryWords } from "./queryWords";
 
 describe("legacy", () => {
   test("Partial queries yield lower scores", () => {
@@ -57,8 +58,10 @@ function simpleFuzzyMatchWords(
   query: string,
   target: string,
 ): number | undefined {
-  const words = query.split(" ").map((word) => asCharactersArray(word));
-
-  const result = fuzzyMatchWords(words, asCharactersArray(query), target);
+  const result = fuzzyMatchWords(
+    queryWords(query),
+    { characters: asCharactersArray(query), lowercase: query },
+    target,
+  );
   return result?.score;
 }
