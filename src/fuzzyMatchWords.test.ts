@@ -2,6 +2,26 @@ import { asCharactersArray } from "../test/asCharactersArray";
 import { fuzzyMatchWords } from "./fuzzyMatchWords";
 
 describe("legacy", () => {
+  test("Partial queries yield lower scores", () => {
+    const input = "The Amazing Spider-Man";
+
+    const theAmazingSpiderScore = simpleFuzzyMatchWords(
+      "The Amazing Spider",
+      input,
+    );
+    expect(theAmazingSpiderScore).toBeLessThan(0 /* score for exact match */);
+
+    const theAmazingScore = simpleFuzzyMatchWords("The Amazing", input);
+    expect(theAmazingSpiderScore).toBeGreaterThan(
+      theAmazingScore ?? Number.POSITIVE_INFINITY,
+    );
+
+    const theScore = simpleFuzzyMatchWords("The", input);
+    expect(theAmazingScore).toBeGreaterThan(
+      theScore ?? Number.POSITIVE_INFINITY,
+    );
+  });
+
   test("order matters (word starts)", () => {
     const target1 = "CheatManager.h";
     const target2 = "ManageCheats.h";

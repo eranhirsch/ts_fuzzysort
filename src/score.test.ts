@@ -31,19 +31,6 @@ describe("legacy", () => {
 
     expect(score1).greaterThan(score2);
   });
-
-  test("Partial queries yield lower scores", () => {
-    const input = "The Amazing Spider-Man";
-
-    const theAmazingSpiderScore = simpleMatchScore("The Amazing Spider", input);
-    expect(theAmazingSpiderScore).toBeLessThan(0 /* score for exact match */);
-
-    const theAmazingScore = simpleMatchScore("The Amazing", input);
-    expect(theAmazingSpiderScore).toBeGreaterThan(theAmazingScore);
-
-    const theScore = simpleMatchScore("The", input);
-    expect(theAmazingScore).toBeGreaterThan(theScore);
-  });
 });
 
 const simpleMatchScore = (query: string, target: string) =>
