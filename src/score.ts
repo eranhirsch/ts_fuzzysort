@@ -68,6 +68,9 @@ const offsetPenalty = ([firstMatchingIndex]: NonEmptyArray<number>): number =>
 // successStrict on a target with too many beginning indexes loses points
 // for being a bad target
 function phrasesPenalty(nextWordBreak: readonly number[]): number {
+  // TODO [2023-09-01]: Check if using set to compute the number of unique
+  // values in nextWordBreak has any impact on performance:
+  // `const words = new Set(nextWordBreak).size;`
   let words = 1;
   for (
     let index = nextWordBreak[0]!;
@@ -97,9 +100,9 @@ function substringBonus(
     firstMatchingIndex === 0 ||
     nextWordBreak[firstMatchingIndex - 1] === firstMatchingIndex
   ) {
-    return bonus;
+    // bonus for substring starting on a beginningIndex
+    return bonus * (1 + query.length * query.length * 1);
   }
 
-  // bonus for substring starting on a beginningIndex
-  return bonus * (1 + query.length * query.length * 1);
+  return bonus;
 }
