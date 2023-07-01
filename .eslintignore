@@ -1,1 +1,3 @@
 src/__legacy
+dist
+node_modules
