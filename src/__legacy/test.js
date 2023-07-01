@@ -136,9 +136,11 @@ async function tests() {
 
   {
     // order should matter when using spaces
+    //! @eranhirsch - fuzzyMatchWords > legacy > order matters (word starts)
     testSorting1("c man", "CheatManager.h", "ManageCheats.h");
     testSorting1("man c", "ManageCheats.h", "CheatManager.h");
 
+    //! @eranhirsch - fuzzyMatchWords > legacy > order matters (lowercase match)
     testSorting1("man c", "ThisManagesStuff.c", "ThisCheatsStuff.m");
     testSorting1("c man", "ThisCheatsStuff.man", "ThisManagesStuff.c");
   }
