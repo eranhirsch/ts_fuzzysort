@@ -37,8 +37,6 @@ module.exports = {
     "import/resolver": { typescript: { alwaysTryTypes: true }, node: true },
   },
 
-  ignorePatterns: ["src/__legacy"],
-
   reportUnusedDisableDirectives: true,
 
   rules: {
