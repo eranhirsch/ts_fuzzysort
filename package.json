@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "cloc": "cloc --exclude-ext=test.ts --exclude-dir=__legacy,__snapshots__ src",
+    "cloc:legacy": "cloc --exclude-list-file=test.js src/__legacy"
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,7 @@
     "@types/prettier": "^2.7.3",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
+    "cloc": "^1.96.0-cloc",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-import-resolver-typescript": "^3.5.5",
